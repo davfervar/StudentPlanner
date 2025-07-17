@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Student Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           1. THEME & CORE STYLES
+           ========================================================================== */
+        :root {
+            --bg-main-light: #F7F8FC;
+            --bg-sidebar-light: #FFFFFF;
+            --bg-widget-light: #FFFFFF;
+            --bg-input-light: #F0F2F5;
+            --bg-hover-light: #EAEFFC;
+            --bg-accent-light: #4A69FF;
+            --bg-accent-hover-light: #3b54cc;
+
+            --text-primary-light: #1A1C20;
+            --text-secondary-light: #6A7383;
+            --text-accent-light: #4A69FF;
+            --text-on-accent-light: #FFFFFF;
+
+            --border-light: #E8EBF1;
+            --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.04);
+            --danger-light: #e74c3c;
+            
+            --hero-gradient-light: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+
+            --bg-main-dark: #121212;
+            --bg-sidebar-dark: #1A1A1A;
+            --bg-widget-dark: #1E1E1E;
+            --bg-input-dark: #2C2C2C;
+            --bg-hover-dark: #2F2F2F;
+            --bg-accent-dark: #5D78FF;
+            --bg-accent-hover-dark: #4a60cc;
+
+            --text-primary-dark: #EAEAEA;
+            --text-secondary-dark: #9A9A9A;
+            --text-accent-dark: #5D78FF;
+            --text-on-accent-dark: #FFFFFF;
+
+            --border-dark: #303030;
+            --shadow-dark: 0 5px 20px rgba(0, 0, 0, 0.25);
+            --danger-dark: #ff5252;
+            
+            --hero-gradient-dark: linear-gradient(120deg, #0f2027 0%, #203a43 100%);
+
+            --bg-main: var(--bg-main-light);
+            --bg-sidebar: var(--bg-sidebar-light);
+            --bg-widget: var(--bg-widget-light);
+            --bg-input: var(--bg-input-light);
+            --bg-hover: var(--bg-hover-light);
+            --bg-accent: var(--bg-accent-light);
+            --bg-accent-hover: var(--bg-accent-hover-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --text-accent: var(--text-accent-light);
+            --text-on-accent: var(--text-on-accent-light);
+            --border-color: var(--border-light);
+            --shadow: var(--shadow-light);
+            --danger: var(--danger-light);
+            --hero-gradient: var(--hero-gradient-light);
+        }
+
+        body.dark-mode {
+            --bg-main: var(--bg-main-dark);
+            --bg-sidebar: var(--bg-sidebar-dark);
+            --bg-widget: var(--bg-widget-dark);
+            --bg-input: var(--bg-input-dark);
+            --bg-hover: var(--bg-hover-dark);
+            --bg-accent: var(--bg-accent-dark);
+            --bg-accent-hover: var(--bg-accent-hover-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --text-accent: var(--text-accent-dark);
+            --text-on-accent: var(--text-on-accent-dark);
+            --border-color: var(--border-dark);
+            --shadow: var(--shadow-dark);
+            --danger: var(--danger-dark);
+            --hero-gradient: var(--hero-gradient-dark);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            transition: background-color 0.3s, color 0.3s;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           2. LAYOUT & SIDEBAR
+           ========================================================================== */
+
+        .sidebar {
+            width: 260px; height: 100vh; background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; flex-shrink: 0;
+            position: fixed; z-index: 100;
+        }
+        .sidebar-header {
+            padding: 20px 20px 0 20px;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px; flex-shrink: 0;
+        }
+        
+        .profile-pic-label { cursor: pointer; }
+        .profile-pic {
+            width: 40px; height: 40px; border-radius: 50%;
+            background-color: var(--bg-input); object-fit: cover;
+            border: 2px solid var(--border-color);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .profile-pic:hover { transform: scale(1.1); border-color: var(--text-accent); }
+
+        .sidebar-header h1 { font-size: 1.2rem; font-weight: 600; }
+        
+        .sidebar-top-controls {
+            flex-shrink: 0;
+            padding: 0 20px;
+        }
+        
+        .main-nav { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            -ms-overflow-style: none; 
+            scrollbar-width: none;
+            padding: 0 20px;
+            min-height: 0;
+        }
+        .main-nav::-webkit-scrollbar { display: none; }
+        
+        .nav-section { margin-bottom: 25px; }
+        .nav-section-title {
+            font-size: 0.75rem; text-transform: uppercase; font-weight: 600;
+            color: var(--text-secondary); padding: 0 0 10px 0;
+        }
+        .nav-link, .filter-link {
+            display: flex; align-items: center; gap: 12px; padding: 12px 15px;
+            border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+            font-weight: 500; transition: all 0.2s; margin: 4px 0;
+            cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+        }
+        .nav-link:hover, .filter-link:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+        .nav-link.active, .filter-link.active { background-color: var(--bg-accent); color: var(--text-on-accent); font-weight: 600; }
+        .nav-icon { font-size: 1.2rem; }
+
+        .search-container { 
+            position: relative;
+        }
+        #sidebar-search {
+            width: 100%; padding: 10px 10px 10px 35px; border-radius: 8px;
+            border: 1px solid var(--border-color); background-color: var(--bg-input);
+            color: var(--text-primary); font-size: 0.9rem;
+        }
+        #sidebar-search:focus { outline: none; border-color: var(--text-accent); }
+        .search-container::before {
+            content: '🔍';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        #open-add-new-modal-btn { width: 100%; margin-top: 15px; }
+
+        #task-filter-nav {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-in-out, padding-top 0.35s ease-in-out, padding-bottom 0.35s ease-in-out;
+            padding-left: 28px;
+            margin: 0;
+        }
+        #task-filter-nav.open {
+            max-height: 350px;
+            padding-top: 4px;
+            padding-bottom: 8px;
+        }
+        #task-filter-nav .filter-link {
+            padding-top: 8px; padding-bottom: 8px; font-size: 0.9rem;
+        }
+        #task-filter-nav .filter-link .nav-icon { font-size: 1.1rem; }
+        
+        .sidebar-footer {
+            flex-shrink: 0;
+            padding: 15px 20px 20px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .app-container {
+            flex-grow: 1; margin-left: 260px; display: flex;
+            flex-direction: column; height: 100vh;
+        }
+
+        .main-content { flex-grow: 1; padding: 25px; overflow-y: auto; }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==========================================================================
+           3. SHARED COMPONENTS & DASHBOARD HERO
+           ========================================================================== */
+        
+        .hero-banner {
+            background: var(--hero-gradient); border-radius: 12px;
+            padding: 30px; margin-bottom: 25px; position: relative;
+            color: var(--text-on-accent); overflow: hidden; box-shadow: var(--shadow);
+        }
+        .hero-banner h2 { font-size: 2.5rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .hero-banner p { font-size: 1rem; opacity: 0.9; margin-top: 5px; }
+        .up-next-card {
+            position: absolute; right: 30px; top: 50%;
+            transform: translateY(-50%); background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px); border-radius: 12px; padding: 20px;
+            width: 280px; border: 1px solid rgba(255,255,255,0.3);
+        }
+        .up-next-card h4 {
+            font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+            opacity: 0.8; margin-bottom: 10px;
+        }
+        .up-next-details { display: flex; align-items: center; gap: 12px; }
+        .up-next-timeline {
+            width: 3px; height: 40px; background: var(--text-on-accent);
+            border-radius: 2px; opacity: 0.8;
+        }
+        .up-next-info h5 { font-size: 1.1rem; font-weight: 600; }
+        .up-next-info p { font-size: 0.9rem; opacity: 0.8; margin-top: 2px; }
+
+        .primary-btn {
+            padding: 10px 18px; background-color: var(--bg-accent);
+            color: var(--text-on-accent); border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            transition: background-color 0.2s, transform 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .primary-btn:hover { background-color: var(--bg-accent-hover); transform: translateY(-2px); }
+        .danger-btn { background-color: var(--danger); }
+        .danger-btn:hover { background-color: color-mix(in srgb, var(--danger) 85%, #000); }
+
+        .secondary-btn {
+            padding: 10px 18px; background-color: var(--bg-input);
+            color: var(--text-primary); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.9rem;
+            transition: background-color 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .secondary-btn:hover { background-color: var(--border-color); }
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px;
+        }
+        .page-header h2 { font-size: 1.8rem; font-weight: 700; }
+        .page-header .header-actions { display: flex; align-items:center; gap: 10px; }
+
+        .widget {
+            background-color: var(--bg-widget); border-radius: 12px;
+            border: 1px solid var(--border-color); padding: 20px;
+            box-shadow: var(--shadow); transition: all 0.3s;
+        }
+        .widget-header {
+             display: flex; justify-content: space-between; align-items: center;
+             margin-bottom: 15px;
+        }
+        .widget-header h3 { font-size: 1.1rem; font-weight: 600; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; animation: fadeInModal 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background-color: var(--bg-widget); padding: 25px;
+            border-radius: 12px; box-shadow: var(--shadow-dark);
+            width: 90%; max-width: 500px;
+            animation: popInModal 0.3s ease-out;
+            max-height: 90vh; display: flex; flex-direction: column;
+        }
+        .modal-body { overflow-y: auto; padding-right: 15px; margin-right: -15px;}
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px; flex-shrink: 0;
+        }
+        .modal-header h3 { font-size: 1.3rem; }
+        .close-modal-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
+        .modal-actions { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block; font-weight: 500; margin-bottom: 8px;
+            font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border-color); background-color: var(--bg-input);
+            color: var(--text-primary); font-size: 1rem; font-family: 'Inter', sans-serif;
+            resize: vertical;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--text-accent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg-accent) 25%, transparent);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popInModal { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* "Add New" modal specific styles */
+        .add-new-form { display: none; }
+        .add-new-form.active { display: block; animation: fadeIn 0.3s ease; }
+        .photo-upload-container {
+            width: 120px; height: 120px; border-radius: 8px; border: 2px dashed var(--border-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; background-color: var(--bg-input); color: var(--text-secondary);
+            text-align: center; transition: border-color 0.2s; position: relative; overflow: hidden;
+        }
+        .photo-upload-container:hover { border-color: var(--text-accent); }
+        .photo-upload-container .plus-icon { font-size: 2rem; font-weight: 200; }
+        .photo-upload-container span { font-size: 0.8rem; margin-top: 5px; }
+        #vacation-photo-preview { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+        #vacation-photo-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center;}
+
+        /* ==========================================================================
+           4. DASHBOARD VIEW & WIDGETS
+           ========================================================================== */
+        
+        #dashboard-view .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .dashboard-main, .dashboard-side { display: flex; flex-direction: column; gap: 25px; }
+        .tasks-overview h4 { font-size: 1.2rem; margin-bottom: 15px; }
+        .task-list-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 5px; border-bottom: 1px solid var(--border-color);
+        }
+        .task-list-item:last-child { border-bottom: none; }
+        .task-checkbox { width: 18px; height: 18px; accent-color: var(--bg-accent); flex-shrink: 0; cursor: pointer; }
+        .task-details { flex-grow: 1; }
+        .task-details .task-name { font-weight: 500; }
+        .task-details .task-name.completed { text-decoration: line-through; color: var(--text-secondary); }
+        .task-subject-tag {
+            font-size: 0.75rem; font-weight: 600; padding: 3px 8px;
+            border-radius: 12px; color: white;
+        }
+
+        /* Pomodoro Widget Styles */
+        .pomodoro-widget {
+            text-align: center; background: var(--hero-gradient);
+            color: var(--text-on-accent); overflow: hidden; padding-bottom: 15px;
+            cursor: pointer;
+        }
+        .pomodoro-widget h3 { color: var(--text-on-accent); opacity: 0.9; font-weight: 600; font-size: 1.1rem; }
+        .pomodoro-widget .timer-visual { position: relative; width: 140px; height: 140px; margin: 10px auto 5px auto; }
+        .pomodoro-widget svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .pomodoro-widget .timer-circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.25); stroke-width: 10; }
+        .pomodoro-widget .timer-circle-progress {
+            fill: none; stroke: #FFFFFF; stroke-width: 10; stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .pomodoro-widget #pomodoro-display {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 2.2rem;
+            font-weight: 600; color: var(--text-on-accent); letter-spacing: 1px;
+        }
+        #pomodoro-session-display {
+            font-size: 0.9rem; font-weight: 500; color: var(--text-on-accent);
+            opacity: 0.8; margin-bottom: 10px;
+        }
+        .pomodoro-widget .pomodoro-controls { display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .pomodoro-control-btn {
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-on-accent); border-radius: 50%;
+            width: 44px; height: 44px; cursor: pointer;
+            display: grid; place-items: center; transition: all 0.2s ease-out;
+            pointer-events: all;
+        }
+        .pomodoro-control-btn:hover { background-color: rgba(255,255,255,0.4); transform: scale(1.1); }
+        .pomodoro-control-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* Habit Tracker Styles */
+        .habit-tracker-widget #habit-list-container {
+            display: flex; flex-direction: column; gap: 12px;
+            max-height: 250px; overflow-y: auto; padding-right: 5px;
+        }
+        .habit-row { display: flex; align-items: center; gap: 10px; position: relative; }
+        .habit-row:hover .delete-habit-btn { opacity: 1; transform: scale(1); }
+        .habit-name { flex-grow: 1; font-size: 0.9rem; font-weight: 500; }
+        .delete-habit-btn {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 1rem; cursor: pointer; padding: 2px;
+            opacity: 0; transform: scale(0.8); transition: all 0.2s;
+        }
+        .delete-habit-btn:hover { color: var(--danger); }
+        .habit-week-tracker { display: flex; gap: 5px; }
+        .habit-week-tracker .day-label {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: grid; place-items: center; font-size: 0.8rem;
+            font-weight: 600; cursor: pointer; border: 2px solid var(--border-color);
+            color: var(--text-secondary); transition: all 0.2s;
+        }
+        .habit-week-tracker input { display: none; }
+        .habit-week-tracker input:checked + .day-label {
+            background-color: var(--bg-accent); border-color: var(--bg-accent); color: var(--text-on-accent);
+        }
+        .side-widget-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .side-widget {
+            background: var(--bg-widget); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 15px; text-align: center;
+            transition: all 0.2s ease;
+        }
+        .side-widget#streak-widget { cursor: pointer; }
+        .side-widget#streak-widget:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+        .side-widget-value { font-size: 1.5rem; font-weight: 700; color: var(--text-accent); }
+        .side-widget-label { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); margin-top: 5px; }
+        #quick-task-input {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border-color); background-color: var(--bg-input);
+            color: var(--text-primary); font-size: 0.9rem; margin-top: 15px;
+        }
+        #quick-task-input:focus { outline: none; border-color: var(--text-accent); }
+        .schedule-widget h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
+        .schedule-timeline {
+            position: relative; width: 100%; height: 24px;
+            background-color: var(--bg-input); border-radius: 12px; overflow: hidden;
+        }
+        .schedule-event {
+            position: absolute; top: 0; height: 100%;
+            border-radius: 12px; cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .schedule-event:hover { transform: scaleY(1.1); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .schedule-time-labels {
+            display: flex; justify-content: space-between; padding: 8px 2px 0 2px;
+            font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;
+        }
+
+        /* ==========================================================================
+           5. TASKS VIEW
+           ========================================================================== */
+        .tasks-section { margin-bottom: 30px; }
+        .tasks-section-header {
+            font-size: 1.5rem; font-weight: 600; margin-bottom: 15px;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+        }
+        #tasks-view .tasks-container { display: flex; flex-direction: column; gap: 12px; }
+        
+        .task-card {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            background-color: var(--bg-widget); border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+        }
+        .task-card:hover { 
+            box-shadow: var(--shadow); 
+            border-color: var(--text-accent);
+            transform: translateY(-2px);
+        }
+        .task-card.highlight {
+            animation: highlight-task 2.5s ease-out;
+        }
+        @keyframes highlight-task {
+            0% { 
+                box-shadow: 0 0 0 4px color-mix(in srgb, var(--bg-accent) 25%, transparent);
+                border-color: var(--text-accent);
+            }
+            80% { 
+                box-shadow: 0 0 0 0px color-mix(in srgb, var(--bg-accent) 0%, transparent);
+                border-color: var(--text-accent);
+            }
+            100% {
+                border-color: var(--border-color);
+            }
+        }
+
+        .task-card .task-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .task-card .task-details { flex-grow: 1; pointer-events: none; }
+        .task-card .task-name { font-weight: 600; font-size: 1rem; }
+        .task-card .task-name.completed {
+            text-decoration: line-through; color: var(--text-secondary); font-weight: 500;
+        }
+        .task-card .task-due-date { 
+            font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500;
+        }
+        .task-tags-container {
+            display: flex; align-items: center; gap: 8px;
+            flex-shrink: 0; margin-left: auto; pointer-events: none;
+        }
+        .task-category-tag {
+            font-size: 0.75rem; font-weight: 600; padding: 4px 10px;
+            border-radius: 12px; background-color: var(--bg-input);
+            color: var(--text-secondary); border: 1px solid var(--border-color);
+        }
+        .task-actions { display: flex; gap: 5px; }
+        .delete-btn {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 1rem; cursor: pointer; padding: 5px; border-radius: 50%;
+            width: 32px; height: 32px; display: grid; place-items: center; transition: all 0.2s;
+        }
+        .delete-btn:hover { background-color: var(--bg-hover); color: var(--danger); }
+        .edit-btn:hover { background-color: var(--bg-hover); color: var(--text-accent); }
+
+        /* ==========================================================================
+           6. SUBJECTS VIEW & MODAL
+           ========================================================================== */
+        .subjects-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;
+        }
+        .subject-card { 
+            padding: 20px; 
+            border-radius: 10px; 
+            color: white; 
+            position: relative; 
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+        }
+         .subject-card.highlight {
+            animation: highlight-subject 2.5s ease-out;
+        }
+        @keyframes highlight-subject {
+            0%, 80% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 4px color-mix(in srgb, var(--bg-accent) 50%, transparent);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .subject-card h4 { font-size: 1.2rem; margin-bottom: 5px; pointer-events:none; }
+        .subject-card p { font-size: 0.9rem; opacity: 0.8; pointer-events:none; }
+        .subject-card-actions {
+            position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;
+        }
+        .subject-action-btn {
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+            display: grid; place-items: center; transition: background 0.2s;
+        }
+        .subject-action-btn:hover { background: rgba(255,255,255,0.4); }
+        .color-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+        .color-option {
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.2s;
+            position: relative; display: grid; place-items: center;
+        }
+        .color-option.selected { border-color: var(--bg-accent); transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .color-option::after {
+            content: '✔'; color: #fff; font-size: 1.2rem;
+            line-height: 1; text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: scale(0); transition: transform 0.2s ease-out;
+        }
+        .color-option.selected::after { transform: scale(1); }
+        .color-option[data-color-value^="#f"].selected::after { color: #000; text-shadow: none; }
+        #pomodoro-color-presets { margin-bottom: 20px; }
+        .custom-color-container { display: flex; align-items: center; gap: 15px; }
+        #pomodoro-custom-color {
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            width: 44px; height: 44px; background-color: transparent;
+            border: none; cursor: pointer; padding: 0;
+        }
+        #pomodoro-custom-color::-webkit-color-swatch { border-radius: 50%; border: 2px solid var(--border-color); }
+         #pomodoro-custom-color::-moz-color-swatch { border-radius: 50%; border: 2px solid var(--border-color); }
+        .schedule-entry { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+
+        /* ==========================================================================
+           7. CALENDAR VIEW - ENHANCED
+           ========================================================================== */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; }
+        .calendar-header h3 { font-size: 1.4rem; font-weight: 600; }
+        .calendar-nav { display: flex; align-items: center; gap: 8px; }
+        .calendar-grid-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day-name { text-align: right; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); padding: 8px; }
+        .calendar-day {
+            min-height: 120px; border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 8px;
+            transition: border-color 0.2s; display: flex; flex-direction: column;
+        }
+        .calendar-day:hover { border-color: var(--text-accent); }
+        .calendar-day.not-current-month { background-color: var(--bg-input); color: var(--text-secondary); }
+        .day-number { text-align: right; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+        .calendar-day.today .day-number { color: var(--bg-accent); }
+        .calendar-tasks { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+        .calendar-task-item, .calendar-class-item {
+            font-size: 0.75rem; padding: 3px 6px; border-radius: 4px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            color: white; cursor: pointer;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .calendar-task-item .task-icon, .calendar-class-item .task-icon { font-size: 0.8em; }
+
+        .calendar-more-indicator {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-accent);
+            cursor: pointer;
+            margin-top: 4px;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .calendar-more-indicator:hover { background-color: var(--bg-hover); }
+
+        #calendar-tooltip {
+            position: absolute;
+            display: none;
+            background-color: var(--bg-widget);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 1050;
+            width: 250px;
+            box-shadow: var(--shadow-dark);
+            pointer-events: none; /* VERY IMPORTANT */
+            transition: opacity 0.2s;
+        }
+        #calendar-tooltip h5 { font-size: 1rem; margin-bottom: 8px; }
+        #calendar-tooltip p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+        #calendar-tooltip p strong { color: var(--text-primary); }
+
+        #day-view-modal .task-list-item { padding: 10px 0; }
+
+        /* ==========================================================================
+           8. SETTINGS, STREAK & TASK DETAIL
+           ========================================================================== */
+        .settings-layout { display: flex; gap: 25px; height: 100%; }
+        .settings-nav {
+            width: 250px; flex-shrink: 0;
+            background-color: var(--bg-widget); border-radius: 12px; padding: 15px;
+        }
+        .settings-nav-link {
+            display: flex; align-items: center; gap: 12px; padding: 12px;
+            border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+            font-weight: 500; transition: background-color 0.2s, color 0.2s; cursor: pointer;
+        }
+        .settings-nav-link:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+        .settings-nav-link.active { background-color: var(--bg-hover); color: var(--text-primary); font-weight: 600; }
+        .settings-nav-link .nav-icon { font-size: 1.3rem; }
+
+        .settings-content {
+            flex-grow: 1; background-color: var(--bg-widget);
+            border-radius: 12px; padding: 25px 35px;
+        }
+        .settings-content h2 { font-size: 1.8rem; font-weight: 600; margin-bottom: 25px; }
+        .settings-section { margin-bottom: 40px; }
+        .settings-section h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; }
+        .settings-section p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; }
+        .profile-picture-setting { display: flex; align-items: center; gap: 20px; }
+        .profile-picture-placeholder {
+            width: 80px; height: 80px; border-radius: 50%;
+            background-color: var(--bg-input); border: 2px dashed var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary);
+        }
+        .profile-picture-placeholder img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .streak-week-view {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        .streak-day-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .streak-day-item .day-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .streak-day-item .day-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+            background-color: var(--bg-input);
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .streak-day-item.active .day-icon {
+            background-color: var(--bg-accent);
+            border-color: var(--bg-accent);
+            color: var(--text-on-accent);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .streak-day-item.current .day-icon {
+            border-color: var(--text-accent);
+        }
+
+        #detail-modal .modal-body { display: flex; flex-direction: column; gap: 15px; }
+        .detail-header { text-align: center; }
+        .detail-header .task-subject-tag { display: inline-block; margin-bottom: 8px;}
+        .detail-header h3 { font-size: 1.5rem; }
+        .detail-header p { color: var(--text-secondary); }
+        .detail-item {
+            background: var(--bg-input);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .detail-item strong {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        /* ==========================================================================
+           9. FOCUS VIEW & OTHER MODALS
+           ========================================================================== */
+        
+        #focus-view {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            gap: 30px;
+            text-align: center;
+        }
+        #focus-view.active {
+             display: flex;
+        }
+        #focus-view-timer {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+        #focus-view-timer svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        #focus-view-timer .timer-circle-bg { 
+            stroke-width: 15;
+            fill: none;
+            stroke: var(--bg-input);
+        }
+        #focus-view-timer .timer-circle-progress { 
+            stroke-width: 15; 
+            fill: none;
+            stroke-linecap: round;
+            stroke: var(--text-accent);
+            transition: stroke-dashoffset 1s linear;
+        }
+        #focus-view-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+        #focus-view-session-display { 
+            font-size: 1.2rem; 
+            color: var(--text-secondary);
+        }
+        #focus-view .pomodoro-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        #focus-view .pomodoro-controls .pomodoro-control-btn {
+            width: 60px; height: 60px;
+            background-color: var(--bg-widget);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        #focus-view .pomodoro-controls .pomodoro-control-btn:hover {
+            background-color: var(--bg-hover);
+            transform: scale(1.1);
+        }
+        #focus-view .pomodoro-controls .pomodoro-control-btn svg { width: 30px; height: 30px; }
+
+
+        #notepad-modal .modal-content { max-width: 900px; width: 90%; height: 85vh; padding: 0; }
+        .notepad-container { flex-grow: 1; display: flex; min-height: 0; }
+        .notes-list-panel {
+            width: 280px; flex-shrink: 0; border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column;
+        }
+        .notes-list-header { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        #notes-list { list-style: none; padding: 10px; margin: 0; overflow-y: auto; flex-grow: 1; }
+        .note-list-item {
+            padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 8px;
+            transition: background-color 0.2s; position: relative;
+        }
+        .note-list-item:hover { background-color: var(--bg-hover); }
+        .note-list-item.active { background-color: var(--bg-accent); color: var(--text-on-accent); }
+        .note-list-item.active .note-list-item-date { color: var(--text-on-accent); opacity: 0.8; }
+        .note-list-item-title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .note-list-item-date { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
+        #note-editor-panel { flex-grow: 1; display: flex; flex-direction: column; padding: 20px; }
+        #active-note-title {
+            font-size: 1.5rem; font-weight: 600; border: none; background: transparent;
+            color: var(--text-primary); width: 100%; margin-bottom: 10px; padding: 10px 0;
+            border-bottom: 1px solid var(--border-color); outline: none;
+        }
+        #active-note-content {
+            flex-grow: 1; width: 100%; border: none; padding: 15px; font-family: 'Inter', sans-serif;
+            font-size: 1rem; background-color: var(--bg-input); color: var(--text-primary);
+            outline: none; resize: none; border-radius: 8px;
+        }
+        #delete-note-btn {
+             background: none; border: none; color: var(--danger); font-size: 1.2em;
+             cursor: pointer; opacity: 0; transition: opacity .2s;
+             position: absolute; right: 12px; top: 12px;
+        }
+        .note-list-item:hover #delete-note-btn { opacity: 1; }
+
+    </style>
+</head>
+<body class="">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <label for="pfp-upload" class="profile-pic-label">
+                <img id="profile-pic" class="profile-pic" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzZBNzM4MyIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDNjMS42NiAwIDMgMS4zNCAzIDNzLTEuMzQgMy0zIDMtMy0xLjM0LTMtMyAxLjM0LTMgMy0zem0wIDE0LjJjLTIuNSAwLTQuNzEtMS4yOC02LTEuMjguMDMtMi4zOCAzLjk5LTQuMTIgNi00LjEyIDIgMCA1Ljk3IDEuNzQgNiA0LjEyLTEuMjktMS0zLjUtMS4yLTUtMS4yeiIvPjwvc3ZnPg==" alt="Foto de Perfil">
+            </label>
+            <input type="file" id="pfp-upload" accept="image/*" style="display:none;">
+            <h1>Ultimate Planner</h1>
+        </div>
+
+        <div class="sidebar-top-controls">
+            <div class="nav-section">
+                <button class="primary-btn" id="open-add-new-modal-btn">➕ Agregar Nuevo</button>
+            </div>
+        </div>
+        
+        <div class="main-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="#" class="nav-link active" data-view="dashboard-view"><span class="nav-icon">🏠</span> Dashboard</a>
+                
+                <div class="nav-item-with-submenu">
+                    <a href="#" class="nav-link" data-view="tasks-view"><span class="nav-icon">📋</span> Tareas</a>
+                    <div id="task-filter-nav">
+                        <button class="filter-link active" data-category="all"><span class="nav-icon">📂</span> Todas</button>
+                        <button class="filter-link" data-category="Tareas"><span class="nav-icon">✔️</span> Tareas</button>
+                        <button class="filter-link" data-category="Exámenes"><span class="nav-icon">✍️</span> Exámenes</button>
+                        <button class="filter-link" data-category="Vacaciones"><span class="nav-icon">🏖️</span> Vacaciones</button>
+                        <button class="filter-link" data-category="Viajes"><span class="nav-icon">✈️</span> Viajes</button>
+                        <button class="filter-link" data-category="Extras"><span class="nav-icon">⭐</span> Extras</button>
+                    </div>
+                </div>
+                <a href="#" class="nav-link" data-view="subjects-view"><span class="nav-icon">📚</span> Materias</a>
+                <a href="#" class="nav-link" data-view="calendar-view"><span class="nav-icon">📅</span> Calendario</a>
+            </div>
+             <div class="nav-section">
+                <div class="nav-section-title">Herramientas</div>
+                <a href="#" class="nav-link" id="open-notepad-btn"><span class="nav-icon">📝</span> Bloc de Notas</a>
+                <a href="#" class="nav-link" id="open-horoscope-btn"><span class="nav-icon">🔮</span> Horóscopo</a>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link" data-view="settings-view">
+                <span class="nav-icon">⚙️</span>
+                <span>Configuración</span>
+            </a>
+            <a href="#" class="nav-link theme-toggle-btn">
+                <span class="nav-icon" id="theme-icon">🌙</span>
+                <span id="theme-text">Dark Mode</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="app-container">
+        <main class="main-content">
+            <div id="dashboard-view" class="view active">
+                <div class="hero-banner">
+                    <h2 id="greeting">Buenas noches.</h2>
+                    <p id="task-summary">Tienes 0 tareas para hoy.</p>
+                    <div class="up-next-card">
+                        <h4>A CONTINUACIÓN</h4>
+                        <div class="up-next-details" id="up-next-container">
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-main">
+                        <div class="widget tasks-overview">
+                            <div class="widget-header">
+                                <h4>Tareas de Hoy</h4>
+                                <button class="primary-btn" id="open-new-task-modal-btn-dash">+ Tarea</button>
+                            </div>
+                            <div id="today-tasks-list"></div>
+                            <input type="text" id="quick-task-input" placeholder="Añadir tarea rápida y presionar Enter...">
+                        </div>
+                         <div class="widget tasks-overview"><h4>Próximamente</h4><div id="upcoming-tasks-list"></div></div>
+                    </div>
+                    <div class="dashboard-side">
+                        <div class="side-widget-container">
+                             <div class="side-widget" id="streak-widget"><div class="side-widget-value" id="streak-display">🔥 0</div><div class="side-widget-label">Racha</div></div>
+                            <div class="side-widget"><div class="side-widget-value" id="weather-display">--°</div><div class="side-widget-label" id="weather-city"></div></div>
+                        </div>
+
+                        <div class="widget schedule-widget">
+                            <h3>Horario de Hoy</h3>
+                            <div class="schedule-timeline" id="schedule-timeline-content">
+                            </div>
+                            <div class="schedule-time-labels">
+                                <span>6am</span>
+                                <span>10am</span>
+                                <span>2pm</span>
+                                <span>6pm</span>
+                                <span>10pm</span>
+                            </div>
+                        </div>
+                        
+                        <div id="pomodoro-widget" class="widget pomodoro-widget">
+                            <h3>Pomodoro</h3>
+                            <div class="timer-visual">
+                                <svg>
+                                    <defs>
+                                        <linearGradient id="pomodoro-gradient-dynamic" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" id="pomodoro-grad-stop1" stop-color="#FFFFFF" />
+                                            <stop offset="100%" id="pomodoro-grad-stop2" stop-color="#FFFFFF" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="timer-circle-bg" cx="70" cy="70" r="65"></circle>
+                                    <circle id="pomodoro-progress" class="timer-circle-progress" cx="70" cy="70" r="65"></circle>
+                                </svg>
+                                <div id="pomodoro-display">25:00</div>
+                            </div>
+                            <div id="pomodoro-session-display"></div>
+                            <div class="pomodoro-controls">
+                                <button class="pomodoro-control-btn" data-action="toggle" aria-label="Iniciar/Pausar Pomodoro">
+                                     <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"></path></svg>
+                                </button>
+                                <button class="pomodoro-control-btn" data-action="reset" aria-label="Reiniciar Pomodoro">
+                                     <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"></path></svg>
+                                </button>
+                                <button class="pomodoro-control-btn" data-action="settings" aria-label="Ajustes de Pomodoro">
+                                     <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49 1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="widget habit-tracker-widget">
+                             <div class="widget-header"><h3>Rastreador de Hábitos</h3></div>
+                            <div id="habit-list-container"></div>
+                            <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                                <input type="text" id="new-habit-input" placeholder="Añadir nuevo hábito...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tasks-view" class="view">
+                 <div class="page-header">
+                       <h2 id="tasks-view-title">Todas las Tareas</h2>
+                        <div class="header-actions">
+                           <div class="search-container">
+                               <input type="search" id="sidebar-search" placeholder="Buscar en tareas...">
+                           </div>
+                           <button class="primary-btn" id="open-new-task-modal-btn-2">+ Tarea</button>
+                       </div>
+                 </div>
+                 <div id="all-tasks-container">
+                 </div>
+            </div>
+
+            <div id="subjects-view" class="view">
+                <div class="page-header">
+                    <h2>Materias</h2>
+                    <div class="header-actions">
+                        <button class="primary-btn" id="add-new-subject-btn">+ Nueva Materia</button>
+                    </div>
+                </div>
+                <div class="subjects-grid" id="subjects-grid-container">
+                </div>
+            </div>
+
+            <div id="calendar-view" class="view">
+                <div class="widget">
+                    <div class="calendar-header">
+                        <h3 id="calendar-month-year"></h3>
+                        <div class="calendar-nav">
+                            <button class="secondary-btn" id="toggle-classes-btn">Ocultar Clases</button>
+                            <button class="secondary-btn" id="cal-prev-btn"><</button>
+                            <button class="secondary-btn" id="cal-today-btn">Hoy</button>
+                            <button class="secondary-btn" id="cal-next-btn">></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid-container" id="calendar-header-days"></div>
+                    <div class="calendar-grid-container" id="calendar-body"></div>
+                </div>
+            </div>
+
+            <div id="settings-view" class="view">
+                <div class="settings-layout">
+                    <nav class="settings-nav">
+                        <a href="#" class="settings-nav-link active"><span class="nav-icon">👤</span> Cuenta</a>
+                        <a href="#" class="settings-nav-link"><span class="nav-icon">📚</span> Materias</a>
+                        <a href="#" class="settings-nav-link"><span class="nav-icon">🎨</span> Personalizar</a>
+                        <a href="#" class="settings-nav-link"><span class="nav-icon">⏰</span> Horario</a>
+                        <a href="#" class="settings-nav-link"><span class="nav-icon">💳</span> Suscripción</a>
+                    </nav>
+                    <div class="settings-content">
+                        <h2>Configuración de la Cuenta</h2>
+                        <div class="settings-section">
+                            <h4>Foto de perfil</h4>
+                            <div class="profile-picture-setting">
+                                <div class="profile-picture-placeholder">
+                                    <img id="settings-profile-pic" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzZBNzM4MyIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDNjMS42NiAwIDMgMS4zNCAzIDNzLTEuMzQgMy0zIDMtMy0xLjM0LTMtMyAxLjM0LTMgMy0zem0wIDE0LjJjLTIuNSAwLTQuNzEtMS4yOC02LTEuMjguMDMtMi4zOCAzLjk5LTQuMTIgNi00LjEyIDIgMCA1Ljk3IDEuNzQgNiA0LjEyLTEuMjktMS0zLjUtMS4yLTUtMS4yeiIvPjwvc3ZnPg==" alt="Foto de Perfil">
+                                </div>
+                                <button class="primary-btn" id="change-picture-btn">Cambiar Foto</button>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h4>Limpiar datos de la cuenta</h4>
+                            <p>Tus datos, incluyendo horarios, tareas, exámenes y eventos, serán eliminados permanentemente y no podrán ser recuperados.</p>
+                            <button class="secondary-btn">Limpiar Datos</button>
+                        </div>
+                         <div class="settings-section">
+                            <h4>Eliminación de la cuenta</h4>
+                            <p>Tu cuenta será eliminada permanentemente y todos tus datos serán borrados irrevocablemente.</p>
+                            <button class="danger-btn">Eliminar Cuenta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="focus-view" class="view">
+                 <div id="focus-view-timer">
+                     <svg>
+                         <circle class="timer-circle-bg" cx="150" cy="150" r="140"></circle>
+                         <circle id="focus-view-progress" class="timer-circle-progress" cx="150" cy="150" r="140"></circle>
+                     </svg>
+                     <div id="focus-view-display">25:00</div>
+                 </div>
+                 <div id="focus-view-session-display">Sesión 1 / 4</div>
+                 <div class="pomodoro-controls" id="focus-view-controls">
+                 </div>
+                 <button class="secondary-btn" id="exit-focus-view-btn">Salir del Modo Enfoque</button>
+            </div>
+
+            </main>
+    </div>
+    
+    <div id="calendar-tooltip"></div>
+
+    <div id="add-new-item-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Nuevo</h3>
+                <button class="close-modal-btn" data-modal-id="add-new-item-modal">&times;</button>
+            </div>
+            <form id="add-new-item-form" class="modal-body">
+                <div class="form-group">
+                    <label for="add-new-item-type">¿Qué te gustaría agregar?</label>
+                    <select id="add-new-item-type">
+                        <option value="task" selected>Tarea</option>
+                        <option value="exam">Examen</option>
+                        <option value="vacation">Vacación</option>
+                    </select>
+                </div>
+
+                <div id="add-new-task-form" class="add-new-form active">
+                    <div class="form-group">
+                        <label for="new-task-title">Título *</label>
+                        <input type="text" id="new-task-title" placeholder="Título de la tarea" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-task-details">Detalles</label>
+                        <textarea id="new-task-details" placeholder="Descripción de la tarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-task-subject">Materia *</label>
+                            <select id="new-task-subject"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-task-type">Tipo *</label>
+                            <select id="new-task-type"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-task-due-date">Fecha de Entrega *</label>
+                        <input type="date" id="new-task-due-date" required>
+                    </div>
+                </div>
+
+                <div id="add-new-exam-form" class="add-new-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-exam-subject">Materia *</label>
+                            <select id="new-exam-subject" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-exam-mode">Modo</label>
+                            <input type="text" id="new-exam-mode" value="In Person">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-exam-module">Nombre del Módulo/Examen *</label>
+                        <input type="text" id="new-exam-module" placeholder="Ej: Examen Parcial 1" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-exam-room">Salón</label>
+                            <input type="text" id="new-exam-room" placeholder="Salón">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-exam-seat">Asiento</label>
+                            <input type="text" id="new-exam-seat" placeholder="N° de asiento">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-exam-date">Fecha *</label>
+                            <input type="date" id="new-exam-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-exam-time">Hora *</label>
+                            <input type="time" id="new-exam-time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-exam-duration">Duración (en minutos) *</label>
+                        <input type="number" id="new-exam-duration" placeholder="Número solamente" required>
+                    </div>
+                </div>
+                
+                <div id="add-new-vacation-form" class="add-new-form">
+                    <div class="form-group">
+                        <label for="new-vacation-name">Nombre *</label>
+                        <input type="text" id="new-vacation-name" placeholder="Nombre de las vacaciones" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-vacation-details">Detalles</label>
+                        <textarea id="new-vacation-details" placeholder="Descripción de las vacaciones" rows="3"></textarea>
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="new-vacation-start-date">Fecha de Inicio *</label>
+                            <input type="date" id="new-vacation-start-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-vacation-end-date">Fecha de Fin *</label>
+                            <input type="date" id="new-vacation-end-date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto</label>
+                        <label class="photo-upload-container" for="new-vacation-photo">
+                            <img id="vacation-photo-preview" src="" alt="Vista previa" style="display:none;"/>
+                            <div id="vacation-photo-placeholder">
+                                <div class="plus-icon">+</div>
+                                <span>Subir foto</span>
+                            </div>
+                        </label>
+                        <input type="file" id="new-vacation-photo" accept="image/*" style="display:none;">
+                    </div>
+                </div>
+
+            </form>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn close-modal-btn" data-modal-id="add-new-item-modal">Cancelar</button>
+                <button type="submit" form="add-new-item-form" class="primary-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="subject-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="subject-modal-title"></h3><button class="close-modal-btn" data-modal-id="subject-modal">&times;</button></div>
+            <div class="modal-body">
+                <form id="subject-form">
+                    <input type="hidden" id="subject-id">
+                    <div class="form-group"><label for="subject-name">Nombre de la Materia</label><input type="text" id="subject-name" required></div>
+                    <div class="form-group"><label for="subject-teacher">Profesor (Opcional)</label><input type="text" id="subject-teacher"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="subject-classroom">Salón/Aula (Opcional)</label><input type="text" id="subject-classroom"></div>
+                        <div class="form-group"><label for="subject-building">Edificio (Opcional)</label><input type="text" id="subject-building"></div>
+                    </div>
+                    <div class="form-group"><label>Horario (Opcional)</label><div id="schedule-container"></div><button type="button" class="secondary-btn" id="add-schedule-btn">+ Añadir Horario</button></div>
+                    <div class="form-group"><label>Color</label><div class="color-picker" id="subject-color-picker"></div></div>
+                </form>
+            </div>
+            <div class="modal-actions"><button type="button" class="secondary-btn close-modal-btn" data-modal-id="subject-modal">Cancelar</button><button type="submit" form="subject-form" class="primary-btn">Guardar</button></div>
+        </div>
+    </div>
+
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-content">
+             <div class="modal-header">
+                <h3 id="detail-modal-title">Detalles</h3>
+                <button class="close-modal-btn" data-modal-id="detail-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="detail-modal-body">
+            </div>
+             <div class="modal-actions">
+                <button type="button" class="primary-btn close-modal-btn" data-modal-id="detail-modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+     <div id="task-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="task-modal-title"></h3><button class="close-modal-btn" data-modal-id="task-modal">&times;</button></div>
+            <form id="task-form" class="modal-body">
+                <input type="hidden" id="task-id">
+                <div class="form-group"><label for="task-name">Nombre de la Tarea</label><input type="text" id="task-name" required></div>
+                <div class="form-group"><label for="task-due-date">Fecha de Entrega</label><input type="date" id="task-due-date" required></div>
+                
+                <div class="form-group">
+                    <label for="task-category">Categoría</label>
+                    <select id="task-category" required></select>
+                </div>
+
+                <div class="form-group"><label for="task-subject">Materia</label><select id="task-subject" required></select></div>
+            </form>
+            <div class="modal-actions"><button type="button" class="secondary-btn close-modal-btn" data-modal-id="task-modal">Cancelar</button><button type="submit" form="task-form" class="primary-btn">Guardar</button></div>
+        </div>
+    </div>
+    <div id="day-view-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="day-view-modal-title">Eventos del Día</h3>
+                <button class="close-modal-btn" data-modal-id="day-view-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="day-view-modal-body">
+            </div>
+            <div class="modal-actions">
+                 <button type="button" class="primary-btn close-modal-btn" data-modal-id="day-view-modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <div id="streak-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tu Racha Semanal</h3>
+                <button class="close-modal-btn" data-modal-id="streak-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="streak-week-view" id="streak-week-view-container">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="primary-btn close-modal-btn" data-modal-id="streak-modal">¡Genial!</button>
+            </div>
+        </div>
+    </div>
+    <div id="notepad-modal" class="modal-overlay">
+         <div class="modal-content" style="max-width: 900px; width: 90%; height: 85vh; padding: 0;">
+            <div class="modal-header" style="padding: 15px 20px;"><h3>Bloc de Notas</h3><button class="close-modal-btn" data-modal-id="notepad-modal">&times;</button></div>
+            <div class="notepad-container">
+                <div class="notes-list-panel">
+                    <div class="notes-list-header"><button id="new-note-btn" class="primary-btn" style="width: 100%;">+ Nueva Nota</button></div>
+                    <ul id="notes-list"></ul>
+                </div>
+                <div class="note-editor-panel" id="note-editor-panel"></div>
+            </div>
+        </div>
+    </div>
+     <div id="horoscope-modal" class="modal-overlay">
+        <div class="modal-content">
+             <div class="modal-header"><h3 id="horoscope-modal-title">Tu Horóscopo</h3><button class="close-modal-btn" data-modal-id="horoscope-modal">&times;</button></div>
+            <div class="modal-body" style="text-align: center;">
+                 <div id="horoscope-emoji" style="font-size: 4rem; margin-bottom: 15px;"></div>
+                <p id="horoscope-text" style="font-size: 1.1rem; line-height: 1.6;"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="pomodoro-settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajustes del Pomodoro</h3>
+                <button class="close-modal-btn" data-modal-id="pomodoro-settings-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="pomodoro-focus-time">Tiempo de Foco (min)</label>
+                    <input type="number" id="pomodoro-focus-time" min="1">
+                </div>
+                 <div class="form-group">
+                    <label for="pomodoro-break-time">Tiempo de Descanso (min)</label>
+                    <input type="number" id="pomodoro-break-time" min="1">
+                </div>
+                 <div class="form-group">
+                    <label for="pomodoro-sessions-goal">Meta de Sesiones</label>
+                    <input type="number" id="pomodoro-sessions-goal" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Colores Predefinidos</label>
+                    <div class="color-picker" id="pomodoro-color-presets"></div>
+                </div>
+                <div class="form-group">
+                    <label>Color Personalizado</label>
+                    <div class="custom-color-container">
+                        <input type="color" id="pomodoro-custom-color" value="#FFFFFF">
+                        <span> Toca para elegir</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="primary-btn close-modal-btn" data-modal-id="pomodoro-settings-modal">Hecho</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="alert-sound" src="https://www.soundjay.com/buttons/beep-07.mp3" preload="auto"></audio>
+
+    <script>
+    (() => {
+        const App = {
+            state: {
+                subjects: [],
+                tasks: [],
+                habits: [],
+                notes: [],
+                activeNoteId: null,
+                pomodoro: {
+                    isRunning: false,
+                    isBreak: false,
+                    timeLeft: 25 * 60,
+                    intervalId: null,
+                    settings: { focus: 25, break: 5 },
+                    progressColor: 'gradient:#FF8C00,#FF0080',
+                    sessions: {
+                        current: 0,
+                        goal: 4
+                    }
+                },
+                streak: { 
+                    count: 0, 
+                    loginHistory: [] 
+                },
+                theme: 'light',
+                currentView: 'dashboard-view',
+                calendar: { 
+                    date: new Date(),
+                    showClasses: true
+                },
+                profilePic: null,
+                taskFilters: {
+                    category: 'all',
+                    searchTerm: ''
+                },
+                taskCategories: ['Tareas', 'Exámenes', 'Vacaciones', 'Viajes', 'Extras'],
+                subjectColorPalette: ['#FF6B6B', '#FF9F43', '#FFD166', '#06D6A0', '#118AB2', '#073B4C', '#EF476F', '#6B4226', '#7209B7', '#3A86FF', '#FB5607', '#8338EC'],
+                pomodoroColorPresets: [
+                    { name: 'Atardecer', value: 'gradient:#FF8C00,#FF0080' },
+                    { name: 'Océano', value: 'gradient:#00BFFF,#1E90FF' },
+                    { name: 'Bosque', value: 'gradient:#228B22,#3CB371' },
+                    { name: 'Neón', value: 'gradient:#00FFFF,#FF00FF' },
+                    { name: 'Galaxia', value: 'gradient:#483D8B,#8A2BE2' },
+                    { name: 'Blanco', value: '#FFFFFF' }
+                ]
+            },
+
+            dataManager: {
+                save() {
+                    const stateToSave = {
+                        subjects: App.state.subjects,
+                        tasks: App.state.tasks,
+                        habits: App.state.habits,
+                        notes: App.state.notes,
+                        activeNoteId: App.state.activeNoteId,
+                        streak: App.state.streak,
+                        theme: App.state.theme,
+                        profilePic: App.state.profilePic,
+                        calendar: { showClasses: App.state.calendar.showClasses },
+                        pomodoro: {
+                            settings: App.state.pomodoro.settings,
+                            progressColor: App.state.pomodoro.progressColor,
+                            sessionsGoal: App.state.pomodoro.sessions.goal
+                        }
+                    };
+                    localStorage.setItem('ultimatePlannerState', JSON.stringify(stateToSave));
+                },
+                load() {
+                    const loadedState = JSON.parse(localStorage.getItem('ultimatePlannerState'));
+                    if (loadedState) {
+                        if (loadedState.pomodoro) {
+                            Object.assign(App.state.pomodoro.settings, loadedState.pomodoro.settings);
+                            App.state.pomodoro.progressColor = loadedState.pomodoro.progressColor || 'gradient:#FF8C00,#FF0080';
+                            App.state.pomodoro.sessions.goal = loadedState.pomodoro.sessionsGoal || 4;
+                            delete loadedState.pomodoro;
+                        }
+                        if (loadedState.calendar) {
+                            App.state.calendar.showClasses = loadedState.calendar.showClasses ?? true;
+                            delete loadedState.calendar;
+                        }
+                        if (loadedState.streak && !Array.isArray(loadedState.streak.loginHistory)) {
+                           loadedState.streak = { count: loadedState.streak.count || 0, loginHistory: [] };
+                        }
+
+                        Object.assign(App.state, loadedState);
+                        App.state.calendar.date = new Date();
+                    }
+                },
+                addHabit(name) { App.state.habits.push({ id: `h_${Date.now()}`, name, completion: Array(7).fill(false) }); this.save(); },
+                deleteHabit(id) {
+                    App.state.habits = App.state.habits.filter(h => h.id !== id);
+                    this.save();
+                },
+                addSubject(subject) { App.state.subjects.push({ id: `s_${Date.now()}`, ...subject }); this.save(); },
+                updateSubject(subject) {
+                    const index = App.state.subjects.findIndex(s => s.id === subject.id);
+                    if (index > -1) App.state.subjects[index] = subject;
+                    this.save();
+                },
+                deleteSubject(id) {
+                    App.state.subjects = App.state.subjects.filter(s => s.id !== id);
+                    App.state.tasks.forEach(t => { if(t.subjectId === id) t.subjectId = 'general'; });
+                    this.save();
+                },
+                getSubject: (id) => App.state.subjects.find(s => s.id === id) || { name: 'General', color: '#6A7383' },
+                getSubjectByName(name) { return App.state.subjects.find(s => s.name.toLowerCase() === name.toLowerCase()); },
+                addTask(task) { App.state.tasks.push({ id: `t_${Date.now()}`, completed: false, ...task }); this.save(); },
+                updateTask(task) {
+                    const index = App.state.tasks.findIndex(t => t.id === task.id);
+                    if (index > -1) App.state.tasks[index] = task;
+                    this.save();
+                },
+                deleteTask(id) { App.state.tasks = App.state.tasks.filter(t => t.id !== id); this.save(); },
+                toggleTask(id) {
+                    const task = App.state.tasks.find(t => t.id === id);
+                    if (task) task.completed = !task.completed;
+                    this.save();
+                },
+                getTask: (id) => App.state.tasks.find(t => t.id === id),
+                getTasksForDate(date) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    return App.state.tasks.filter(t => t.dueDate === dateStr);
+                },
+                getClassesForDate(date) {
+                    const dayOfWeek = (date.getDay() + 6) % 7;
+                    return App.state.subjects.filter(subject => 
+                        subject.schedule?.some(slot => parseInt(slot.day, 10) === dayOfWeek)
+                    );
+                },
+                getUpcomingTasks() {
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    return App.state.tasks.filter(t => new Date(t.dueDate) > today && !t.completed)
+                        .sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)).slice(0, 5);
+                },
+                getUpNextItem() {
+                    const now = new Date();
+                    const todayIndex = (now.getDay() + 6) % 7;
+                    const upcomingToday = [];
+                    App.state.subjects.forEach(subject => {
+                        subject.schedule?.forEach(slot => {
+                            if(parseInt(slot.day, 10) === todayIndex) {
+                                const [startH, startM] = slot.startTime.split(':').map(Number);
+                                const eventStart = new Date(); 
+                                eventStart.setHours(startH, startM, 0, 0);
+                                if (eventStart > now) {
+                                    upcomingToday.push({ 
+                                        name: subject.name,
+                                        timeInfo: `${slot.startTime} - ${slot.endTime}`, 
+                                        color: subject.color, 
+                                        type: 'class', 
+                                        eventStart 
+                                    });
+                                }
+                            }
+                        });
+                    });
+                    return upcomingToday.sort((a,b) => a.eventStart - b.eventStart)[0];
+                },
+                toggleHabit(id, dayIndex) {
+                    const habit = App.state.habits.find(h => h.id === id);
+                    if (habit) habit.completion[dayIndex] = !habit.completion[dayIndex];
+                    this.save();
+                },
+                resetWeeklyHabits() {
+                    const today = new Date();
+                    const lastReset = localStorage.getItem('habitLastReset');
+                    if (today.getDay() === 1 && today.toDateString() !== lastReset) {
+                        App.state.habits.forEach(h => h.completion.fill(false));
+                        localStorage.setItem('habitLastReset', today.toDateString());
+                        this.save();
+                    }
+                },
+                addNote() {
+                    const newNote = { id: `n_${Date.now()}`, title: 'Nueva Nota', content: '', lastModified: Date.now() };
+                    App.state.notes.unshift(newNote);
+                    App.state.activeNoteId = newNote.id;
+                    this.save();
+                    return newNote;
+                },
+                updateNote(id, { title, content }) {
+                    const note = App.state.notes.find(n => n.id === id);
+                    if(note) { note.title = title; note.content = content; note.lastModified = Date.now(); }
+                    this.save();
+                },
+                deleteNote(id){
+                    App.state.notes = App.state.notes.filter(n => n.id !== id);
+                    if(App.state.activeNoteId === id) App.state.activeNoteId = null;
+                    this.save();
+                },
+                updateStreak() {
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const history = App.state.streak.loginHistory || [];
+                    
+                    if (history.includes(todayStr)) {
+                        return;
+                    }
+
+                    history.push(todayStr);
+
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    App.state.streak.loginHistory = history.filter(d => new Date(d) >= thirtyDaysAgo);
+
+                    let currentStreak = 0;
+                    let checkDate = new Date();
+                    while (true) {
+                        const checkDateStr = checkDate.toISOString().split('T')[0];
+                        if (App.state.streak.loginHistory.includes(checkDateStr)) {
+                            currentStreak++;
+                            checkDate.setDate(checkDate.getDate() - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                    App.state.streak.count = currentStreak;
+                    this.save();
+                }
+            },
+            
+            ui: {
+                init() {
+                    this.applyTheme();
+                    this.renderProfilePic();
+                    this.renderAll();
+                    this.setupEventListeners();
+                    this.startClocks();
+                    App.ui.pomodoro.reset(true, false);
+                },
+                renderAll() { this.renderView(); this.renderDashboard(); this.renderTasksView(); this.renderSubjectsView(); this.renderCalendar(); this.renderFocusView(); },
+                applyTheme() { document.body.classList.toggle('dark-mode', App.state.theme === 'dark'); document.getElementById('theme-icon').textContent = App.state.theme === 'dark' ? '☀️' : '🌙'; document.getElementById('theme-text').textContent = App.state.theme === 'dark' ? 'Light Mode' : 'Dark Mode'; },
+                startClocks() { const update = () => { this.renderGreeting(); }; update(); setInterval(update, 60000); },
+                renderGreeting() { const hour = new Date().getHours(); const greetingEl = document.getElementById('greeting'); if (hour < 12) greetingEl.textContent = 'Buenos días.'; else if (hour < 19) greetingEl.textContent = 'Buenas tardes.'; else greetingEl.textContent = 'Buenas noches.'; },
+                renderView() { 
+                    document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); 
+                    document.getElementById(App.state.currentView)?.classList.add('active'); 
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active')); 
+                    document.querySelector(`.nav-link[data-view="${App.state.currentView}"]`)?.classList.add('active'); 
+
+                    const showTaskControls = App.state.currentView === 'tasks-view';
+                    const taskFilterNav = document.getElementById('task-filter-nav');
+                    
+                    if (showTaskControls) {
+                        taskFilterNav.classList.add('open');
+                    } else {
+                        taskFilterNav.classList.remove('open');
+                    }
+                },
+                renderDashboard() { const todayTaskCount = App.dataManager.getTasksForDate(new Date()).filter(t=>!t.completed).length; document.getElementById('task-summary').textContent = `Tienes ${todayTaskCount} tarea${todayTaskCount !== 1 ? 's' : ''} pendiente${todayTaskCount !== 1 ? 's' : ''} para hoy.`; const upNextItem = App.dataManager.getUpNextItem(); const upNextContainer = document.getElementById('up-next-container'); if (upNextItem) { upNextContainer.innerHTML = `<div class="up-next-timeline" style="background-color: ${upNextItem.color || 'var(--text-on-accent)'};"></div><div class="up-next-info"><h5>${upNextItem.name}</h5><p>${upNextItem.timeInfo}</p></div>`; } else { upNextContainer.innerHTML = `<div class="up-next-info"><h5>Estás libre por ahora.</h5><p>¡Buen trabajo!</p></div>`; } document.getElementById('streak-display').textContent = `🔥 ${App.state.streak.count}`; document.getElementById('weather-display').textContent = '28°'; document.getElementById('weather-city').textContent = 'Kissimmee, FL'; const todayList = document.getElementById('today-tasks-list'); const upcomingList = document.getElementById('upcoming-tasks-list'); todayList.innerHTML = ''; upcomingList.innerHTML = ''; App.dataManager.getTasksForDate(new Date()).forEach(t => todayList.appendChild(this.createTaskElement(t, 'list-item'))); App.dataManager.getUpcomingTasks().forEach(t => upcomingList.appendChild(this.createTaskElement(t, 'list-item'))); if (todayList.innerHTML === '') todayList.innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding:10px;">¡Todo listo por hoy! ✨</p>'; if (upcomingList.innerHTML === '') upcomingList.innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding:10px;">No hay tareas próximas.</p>'; this.renderPomodoro(); this.renderHabitTracker(); this.renderTodaySchedule(); },
+                
+                renderTasksView() {
+                    const container = document.getElementById('all-tasks-container');
+                    if (!container) return;
+                    container.innerHTML = '';
+                    const { category, searchTerm } = App.state.taskFilters;
+                    
+                    document.getElementById('tasks-view-title').textContent = category === 'all' ? 'Todas las Tareas' : category;
+
+                    let filteredTasks = App.state.tasks;
+
+                    if (category !== 'all') {
+                        filteredTasks = filteredTasks.filter(t => t.category === category);
+                    }
+                    if (searchTerm) {
+                        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+                        filteredTasks = filteredTasks.filter(t => t.name.toLowerCase().includes(lowerCaseSearchTerm));
+                    }
+
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const today = new Date(todayStr);
+
+                    const sections = {
+                        overdue: [], today: [], upcoming: [], completed: []
+                    };
+
+                    filteredTasks.forEach(task => {
+                        if (task.completed) {
+                            sections.completed.push(task);
+                        } else {
+                            const dueDate = new Date(task.dueDate + 'T00:00:00');
+                            if (dueDate < today) {
+                                sections.overdue.push(task);
+                            } else if (task.dueDate === todayStr) {
+                                sections.today.push(task);
+                            } else {
+                                sections.upcoming.push(task);
+                            }
+                        }
+                    });
+                    
+                    const renderSection = (title, tasks, isCompletedSection = false) => {
+                        if (tasks.length === 0 && !isCompletedSection) return '';
+                        
+                        const sectionEl = document.createElement('div');
+                        sectionEl.className = 'tasks-section';
+                        const tasksHTML = tasks
+                            .sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate))
+                            .map(t => this.createTaskElement(t, 'card').outerHTML)
+                            .join('');
+
+                        sectionEl.innerHTML = `<h3 class="tasks-section-header">${title}</h3><div class="tasks-container">${tasks.length > 0 ? tasksHTML : '<p style="color:var(--text-secondary); padding:10px 0;">No hay tareas completadas.</p>'}</div>`;
+                        return sectionEl.outerHTML;
+                    };
+                    
+                    let finalHTML = '';
+                    finalHTML += renderSection('Vencidas', sections.overdue);
+                    finalHTML += renderSection('Hoy', sections.today);
+                    finalHTML += renderSection('Próximas', sections.upcoming);
+                    finalHTML += renderSection('Completadas', sections.completed, true);
+                    
+                    container.innerHTML = finalHTML;
+                    
+                    if (container.innerHTML.trim() === '') {
+                        container.innerHTML = `<p style="color:var(--text-secondary); text-align:center; padding:20px;">No se encontraron tareas con los filtros actuales.</p>`;
+                    }
+                },
+
+                renderSubjectsView() {
+                    const container = document.getElementById('subjects-grid-container');
+                    this.renderSubjectsGrid(container);
+                },
+
+                renderSubjectsGrid(containerEl) {
+                    if (!containerEl) return;
+                    containerEl.innerHTML = '';
+                    if (App.state.subjects.length === 0) {
+                        containerEl.innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding:20px;">Crea tu primera materia para empezar a organizarte.</p>';
+                        return;
+                    }
+                    App.state.subjects.forEach(s => containerEl.appendChild(this.createSubjectElement(s)));
+                },
+                renderCalendar() {
+                    const calBody = document.getElementById('calendar-body');
+                    const calHeader = document.getElementById('calendar-header-days');
+                    const toggleBtn = document.getElementById('toggle-classes-btn');
+                    
+                    toggleBtn.textContent = App.state.calendar.showClasses ? 'Ocultar Clases' : 'Mostrar Clases';
+                    calBody.innerHTML = '';
+                    calHeader.innerHTML = '';
+                    ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calHeader.innerHTML += `<div class="calendar-day-name">${day}</div>`);
+                    const date = App.state.calendar.date;
+                    document.getElementById('calendar-month-year').textContent = date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                    const month = date.getMonth();
+                    const year = date.getFullYear();
+                    const firstDayOfMonth = new Date(year, month, 1).getDay();
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const MAX_ITEMS_VISIBLE = 3;
+
+                    for (let i = 0; i < firstDayOfMonth; i++) {
+                        calBody.innerHTML += `<div class="calendar-day not-current-month"></div>`;
+                    }
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        const dayCell = document.createElement('div');
+                        dayCell.className = 'calendar-day';
+                        const thisDate = new Date(year, month, i);
+                        const thisDateStr = thisDate.toISOString().split('T')[0];
+
+                        if (thisDate.toDateString() === new Date().toDateString()) {
+                            dayCell.classList.add('today');
+                        }
+
+                        dayCell.innerHTML = `<div class="day-number" data-date="${thisDateStr}">${i}</div><div class="calendar-tasks"></div>`;
+                        const tasksContainer = dayCell.querySelector('.calendar-tasks');
+                        
+                        let itemsForDay = App.dataManager.getTasksForDate(thisDate);
+
+                        if (App.state.calendar.showClasses) {
+                            const classesForDay = App.dataManager.getClassesForDate(thisDate);
+                            itemsForDay = itemsForDay.concat(classesForDay.map(c => ({...c, type: 'class'})));
+                        }
+
+                        itemsForDay.slice(0, MAX_ITEMS_VISIBLE).forEach(item => {
+                            const itemEl = document.createElement('div');
+                            if (item.type === 'class') {
+                                itemEl.className = 'calendar-class-item';
+                                itemEl.dataset.subjectId = item.id;
+                                itemEl.style.backgroundColor = item.color;
+                                itemEl.innerHTML = `<span class="task-icon">🎓</span> <span>${item.name}</span>`;
+                            } else {
+                                itemEl.className = 'calendar-task-item';
+                                itemEl.dataset.taskId = item.id;
+                                const subject = App.dataManager.getSubject(item.subjectId);
+                                itemEl.style.backgroundColor = subject.color;
+                                let icon = '';
+                                if(item.category === 'Exámenes') icon = '✍️';
+                                else if(item.category === 'Tareas') icon = '✔️';
+                                else if(item.category === 'Viajes') icon = '✈️';
+                                itemEl.innerHTML = `<span class="task-icon">${icon}</span> <span>${item.name}</span>`;
+                            }
+                            tasksContainer.appendChild(itemEl);
+                        });
+
+                        if (itemsForDay.length > MAX_ITEMS_VISIBLE) {
+                            const moreEl = document.createElement('div');
+                            moreEl.className = 'calendar-more-indicator';
+                            moreEl.dataset.date = thisDateStr;
+                            moreEl.textContent = `+${itemsForDay.length - MAX_ITEMS_VISIBLE} más...`;
+                            tasksContainer.appendChild(moreEl);
+                        }
+
+                        calBody.appendChild(dayCell);
+                    }
+                },
+                renderTodaySchedule() { const timeline = document.getElementById('schedule-timeline-content'); if (!timeline) return; timeline.innerHTML = ''; const todayIndex = (new Date().getDay() + 6) % 7; const timelineStartHour = 6; const timelineEndHour = 22; const totalTimelineMinutes = (timelineEndHour - timelineStartHour) * 60; const timeToMinutes = (timeStr) => { if(!timeStr) return 0; const [h, m] = timeStr.split(':').map(Number); return h * 60 + m; }; App.state.subjects.forEach(subject => { subject.schedule?.forEach(slot => { if (parseInt(slot.day, 10) === todayIndex) { const startMinutes = timeToMinutes(slot.startTime); const endMinutes = timeToMinutes(slot.endTime); const left = ((startMinutes - (timelineStartHour * 60)) / totalTimelineMinutes) * 100; const width = ((endMinutes - startMinutes) / totalTimelineMinutes) * 100; if (width > 0 && left >= 0 && left < 100) { const eventEl = document.createElement('div'); eventEl.className = 'schedule-event'; eventEl.dataset.subjectId = subject.id; eventEl.style.left = `${left}%`; eventEl.style.width = `${width}%`; eventEl.style.backgroundColor = subject.color; eventEl.title = `${subject.name}\n${slot.startTime} - ${slot.endTime}`; timeline.appendChild(eventEl); } } }); }); },
+                
+                updatePomodoroProgress(progressCircle, display, totalDuration, timeLeft) {
+                    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                    const seconds = String(timeLeft % 60).padStart(2, '0');
+                    if (display) display.textContent = `${minutes}:${seconds}`;
+
+                    if (progressCircle) {
+                        const radius = progressCircle.r.baseVal.value;
+                        const circumference = 2 * Math.PI * radius;
+                        const progress = totalDuration > 0 ? timeLeft / totalDuration : 0;
+                        const offset = circumference * (1 - progress);
+                        progressCircle.style.strokeDasharray = circumference;
+                        progressCircle.style.strokeDashoffset = offset;
+                    }
+                },
+
+                renderPomodoro() {
+                    const { timeLeft, isRunning, isBreak, settings, sessions, progressColor } = App.state.pomodoro;
+                    
+                    const widgetDisplay = document.getElementById('pomodoro-display');
+                    const widgetProgress = document.getElementById('pomodoro-progress');
+                    const toggleBtn = document.querySelector('#pomodoro-widget [data-action="toggle"]');
+                    const totalDuration = (isBreak ? settings.break : settings.focus) * 60;
+                    
+                    if (widgetDisplay && toggleBtn) {
+                        this.updatePomodoroProgress(widgetProgress, widgetDisplay, totalDuration, timeLeft);
+                        document.getElementById('pomodoro-session-display').textContent = `Sesión ${sessions.current} / ${sessions.goal}`;
+
+                        toggleBtn.innerHTML = isRunning 
+                            ? `<svg viewBox="0 0 24 24"><path d="M14 19h4V5h-4v14zm-6 0h4V5H8v14z"></path></svg>`
+                            : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"></path></svg>`;
+                        
+                        if (progressColor.startsWith('gradient:')) {
+                            const colors = progressColor.replace('gradient:', '').split(',');
+                            document.getElementById('pomodoro-grad-stop1').setAttribute('stop-color', colors[0]);
+                            document.getElementById('pomodoro-grad-stop2').setAttribute('stop-color', colors[1]);
+                            widgetProgress.style.stroke = 'url(#pomodoro-gradient-dynamic)';
+                        } else {
+                            widgetProgress.style.stroke = progressColor;
+                        }
+                    }
+                },
+                renderFocusView() {
+                     if (App.state.currentView !== 'focus-view') return;
+
+                    const { timeLeft, isRunning, isBreak, settings, sessions } = App.state.pomodoro;
+                    const totalDuration = (isBreak ? settings.break : settings.focus) * 60;
+                    
+                    const focusDisplay = document.getElementById('focus-view-display');
+                    const focusProgress = document.getElementById('focus-view-progress');
+                    const focusSession = document.getElementById('focus-view-session-display');
+                    const focusControls = document.getElementById('focus-view-controls');
+
+                    this.updatePomodoroProgress(focusProgress, focusDisplay, totalDuration, timeLeft);
+                    focusSession.textContent = `Sesión ${sessions.current} de ${sessions.goal} - ${isBreak ? 'Descanso' : 'Enfoque'}`;
+
+                    focusControls.innerHTML = `
+                         <button class="pomodoro-control-btn" data-action="toggle" aria-label="Iniciar/Pausar Pomodoro">
+                            ${isRunning ? '<svg viewBox="0 0 24 24"><path d="M14 19h4V5h-4v14zm-6 0h4V5H8v14z"></path></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"></path></svg>'}
+                         </button>
+                         <button class="pomodoro-control-btn" data-action="reset" aria-label="Reiniciar Pomodoro">
+                            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"></path></svg>
+                         </button>
+                         <button class="pomodoro-control-btn" data-action="settings" aria-label="Ajustes de Pomodoro">
+                            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49 1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path></svg>
+                         </button>
+                    `;
+                },
+
+                renderHabitTracker() {
+                    const container = document.getElementById('habit-list-container');
+                    container.innerHTML = '';
+                    App.state.habits.forEach(habit => {
+                        const row = document.createElement('div');
+                        row.className = 'habit-row';
+                        let weekHTML = '';
+                        for (let i = 0; i < 7; i++) {
+                            weekHTML += `<div><input type="checkbox" id="h-${habit.id}-${i}" data-habit-id="${habit.id}" data-day="${i}" ${habit.completion[i] ? 'checked' : ''}><label for="h-${habit.id}-${i}" class="day-label">${['L','M','X','J','V','S','D'][i]}</label></div>`;
+                        }
+                        row.innerHTML = `
+                            <button class="delete-habit-btn" data-habit-id="${habit.id}" title="Eliminar hábito">🗑️</button>
+                            <span class="habit-name">${habit.name}</span>
+                            <div class="habit-week-tracker">${weekHTML}</div>
+                        `;
+                        container.appendChild(row);
+                    });
+                },
+                createTaskElement(task, type) {
+                    const el = document.createElement('div');
+                    const subject = App.dataManager.getSubject(task.subjectId);
+                    const color = subject.color;
+
+                    if (type === 'list-item') {
+                         el.className = 'task-list-item';
+                         el.innerHTML = `
+                            <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''}>
+                            <div class="task-details">
+                                <span class="task-name ${task.completed ? 'completed' : ''}">${task.name}</span>
+                            </div>
+                            <span class="task-subject-tag" style="background-color: ${color};">${subject.name}</span>`;
+                    } else {
+                        el.className = 'task-card';
+                        el.id = `task-card-${task.id}`;
+                        el.dataset.taskId = task.id;
+                        el.innerHTML = `
+                            <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${task.completed ? 'checked' : ''}>
+                            <div class="task-details">
+                                <span class="task-name ${task.completed ? 'completed' : ''}">${task.name}</span>
+                                <div class="task-due-date">Vence: ${new Date(task.dueDate + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+                            </div>
+                            <div class="task-tags-container">
+                                <span class="task-category-tag">${task.category}</span>
+                                <span class="task-subject-tag" style="background-color: ${color};">${subject.name}</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="delete-btn edit-btn" data-task-id="${task.id}" data-action="edit">✏️</button>
+                                <button class="delete-btn" data-task-id="${task.id}" data-action="delete">🗑️</button>
+                            </div>
+                        `;
+                    }
+                    return el;
+                },
+                createSubjectElement(subject) { const card = document.createElement('div'); card.className = 'subject-card'; card.id = `subject-card-${subject.id}`; card.dataset.subjectId = subject.id; card.style.backgroundColor = subject.color; card.innerHTML = `<h4>${subject.name}</h4><p>${subject.teacher || 'Sin profesor'}</p><div class="subject-card-actions"><button class="subject-action-btn" data-subject-id="${subject.id}" data-action="edit">✏️</button><button class="subject-action-btn" data-subject-id="${subject.id}" data-action="delete">🗑️</button></div>`; return card; },
+                openModal(id) { document.getElementById(id).classList.add('active'); },
+                closeModal(id) { document.getElementById(id).classList.remove('active'); },
+                prepareSubjectModal(id = null) {
+                    const form = document.getElementById('subject-form');
+                    form.reset();
+                    document.getElementById('subject-id').value = id || '';
+                    document.getElementById('subject-modal-title').textContent = id ? 'Editar Materia' : 'Nueva Materia';
+                    const picker = document.getElementById('subject-color-picker');
+                    picker.innerHTML = App.state.subjectColorPalette.map(c => `<div class="color-option" style="background-color: ${c}" data-color-value="${c}"></div>`).join('');
+                    const scheduleContainer = document.getElementById('schedule-container');
+                    scheduleContainer.innerHTML = '';
+                    if (id) {
+                        const s = App.dataManager.getSubject(id);
+                        document.getElementById('subject-name').value = s.name;
+                        document.getElementById('subject-teacher').value = s.teacher;
+                        document.getElementById('subject-classroom').value = s.classroom || '';
+                        document.getElementById('subject-building').value = s.building || '';
+                        const colorOption = picker.querySelector(`[data-color-value="${s.color}"]`);
+                        if (colorOption) colorOption.classList.add('selected');
+                        s.schedule?.forEach(slot => this.addScheduleRow(slot.day, slot.startTime, slot.endTime));
+                    } else {
+                        picker.querySelector('.color-option')?.classList.add('selected');
+                    }
+                    this.openModal('subject-modal');
+                },
+                prepareTaskModal(id = null) {
+                    const form = document.getElementById('task-form');
+                    form.reset();
+                    document.getElementById('task-id').value = id || '';
+                    document.getElementById('task-modal-title').textContent = id ? 'Editar Tarea' : 'Nueva Tarea';
+                    
+                    const subjectSelect = document.getElementById('task-subject');
+                    subjectSelect.innerHTML = '<option value="general" selected>General</option>' + App.state.subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+                    const categorySelect = document.getElementById('task-category');
+                    categorySelect.innerHTML = App.state.taskCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+                    if(id) {
+                        const t = App.dataManager.getTask(id);
+                        document.getElementById('task-name').value = t.name;
+                        document.getElementById('task-due-date').value = t.dueDate;
+                        subjectSelect.value = t.subjectId;
+                        categorySelect.value = t.category;
+                    } else {
+                        document.getElementById('task-due-date').valueAsDate = new Date();
+                    }
+                    this.openModal('task-modal');
+                },
+                prepareDetailModal(id, type) {
+                    const modalTitle = document.getElementById('detail-modal-title');
+                    const modalBody = document.getElementById('detail-modal-body');
+                    modalBody.innerHTML = '';
+                    let detailsHTML = '';
+
+                    const createDetailItem = (label, value) => {
+                        if (!value) return '';
+                        return `<div class="detail-item"><strong>${label}</strong> ${value}</div>`;
+                    };
+
+                    if (type === 'task') {
+                        const task = App.dataManager.getTask(id);
+                        if (!task) return;
+                        const subject = App.dataManager.getSubject(task.subjectId);
+                        modalTitle.textContent = "Detalles de la Tarea";
+                        
+                        detailsHTML = `<div class="detail-header">
+                            <span class="task-subject-tag" style="background-color: ${subject.color}; color: white;">${subject.name}</span>
+                            <h3>${task.name}</h3>
+                            <p>Vence: ${new Date(task.dueDate + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                        </div>`;
+                        
+                        detailsHTML += createDetailItem('CATEGORÍA', task.category);
+                        if (task.details) {
+                            if (task.category === 'Exámenes') {
+                                detailsHTML += createDetailItem('HORA', task.details.time);
+                                detailsHTML += createDetailItem('SALÓN', task.details.room);
+                                detailsHTML += createDetailItem('ASIENTO', task.details.seat);
+                                detailsHTML += createDetailItem('DURACIÓN', task.details.duration ? `${task.details.duration} min` : '');
+                                detailsHTML += createDetailItem('MODO', task.details.mode);
+                            } else {
+                                detailsHTML += createDetailItem('DETALLES', task.details.description);
+                            }
+                        }
+                    } else if (type === 'subject') {
+                        const subject = App.dataManager.getSubject(id);
+                        if (!subject) return;
+                        modalTitle.textContent = "Detalles de la Materia";
+
+                        detailsHTML = `<div class="detail-header">
+                            <span class="task-subject-tag" style="background-color: ${subject.color}; color: white;">Materia</span>
+                            <h3>${subject.name}</h3>
+                            <p>${subject.teacher || 'Sin profesor asignado'}</p>
+                        </div>`;
+                        
+                        detailsHTML += createDetailItem('EDIFICIO', subject.building);
+                        detailsHTML += createDetailItem('SALÓN / AULA', subject.classroom);
+
+                        if (subject.schedule && subject.schedule.length > 0) {
+                            detailsHTML += `<div class="detail-item"><strong>HORARIO SEMANAL</strong>`;
+                            const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                            subject.schedule.forEach(slot => {
+                                detailsHTML += `<p style="margin-top:5px;">${dayNames[slot.day]}: ${slot.startTime} - ${slot.endTime}</p>`;
+                            });
+                            detailsHTML += `</div>`;
+                        } else {
+                            detailsHTML += createDetailItem('HORARIO', 'No se ha definido un horario.');
+                        }
+                    }
+
+                    modalBody.innerHTML = detailsHTML;
+                    this.openModal('detail-modal');
+                },
+                
+                prepareAddNewModal() {
+                    const form = document.getElementById('add-new-item-form');
+                    form.reset();
+                    document.getElementById('add-new-item-type').value = 'task';
+
+
+                    const subjectSelects = form.querySelectorAll('select[id*="-subject"]');
+                    const subjectOptions = '<option value="general" selected>General</option>' + App.state.subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+                    subjectSelects.forEach(select => select.innerHTML = subjectOptions);
+                    
+                    const taskTypeSelect = document.getElementById('new-task-type');
+                    taskTypeSelect.innerHTML = App.state.taskCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+                    taskTypeSelect.value = 'Tareas';
+
+                    form.querySelectorAll('input[type="date"]').forEach(input => {
+                        if (!input.value) input.valueAsDate = new Date();
+                    });
+                    
+                     form.querySelectorAll('input[type="time"]').forEach(input => {
+                        if (!input.value) input.value = '09:00';
+                    });
+                    
+                    const preview = document.getElementById('vacation-photo-preview');
+                    preview.src = "";
+                    preview.style.display = 'none';
+                    document.getElementById('vacation-photo-placeholder').style.display = 'flex';
+
+                    this.switchAddNewForm('task');
+                    this.openModal('add-new-item-modal');
+                },
+                
+                switchAddNewForm(type) {
+                    document.querySelectorAll('.add-new-form').forEach(form => form.classList.remove('active'));
+                    const activeForm = document.getElementById(`add-new-${type}-form`);
+                    if (activeForm) {
+                        activeForm.classList.add('active');
+                        document.querySelectorAll('#add-new-item-form .add-new-form:not(.active) [required]').forEach(el => el.required = false);
+                        activeForm.querySelectorAll('[data-required="true"]').forEach(el => el.required = true);
+                    }
+                },
+
+                preparePomodoroSettingsModal() {
+                    const picker = document.getElementById('pomodoro-color-presets');
+                    picker.innerHTML = App.state.pomodoroColorPresets.map(p => 
+                        `<div class="color-option" data-color-value="${p.value}" title="${p.name}" style="background: ${p.value.startsWith('gradient:') ? p.value.replace('gradient:', 'linear-gradient(45deg,') + ')' : p.value}"></div>`
+                    ).join('');
+                    
+                    document.getElementById('pomodoro-focus-time').value = App.state.pomodoro.settings.focus;
+                    document.getElementById('pomodoro-break-time').value = App.state.pomodoro.settings.break;
+                    document.getElementById('pomodoro-sessions-goal').value = App.state.pomodoro.sessions.goal;
+
+                    const currentColor = App.state.pomodoro.progressColor;
+                    const selectedOption = picker.querySelector(`[data-color-value="${currentColor}"]`);
+                    if (selectedOption) {
+                        selectedOption.classList.add('selected');
+                    }
+                    this.openModal('pomodoro-settings-modal');
+                },
+                prepareNotepad() { this.renderNoteList(); this.renderNoteEditor(); this.openModal('notepad-modal'); },
+                addScheduleRow(day = '0', start = '09:00', end = '10:00') { const container = document.getElementById('schedule-container'); const row = document.createElement('div'); row.className = 'schedule-entry'; row.innerHTML = `<select class="schedule-day">${['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map((d,i) => `<option value="${i}" ${i == day ? 'selected' : ''}>${d}</option>`).join('')}</select><input type="time" class="schedule-start" value="${start}"><span>-</span><input type="time" class="schedule-end" value="${end}"><button type="button" class="delete-btn" data-action="delete-schedule-row">🗑️</button>`; container.appendChild(row); },
+                renderNoteList(){ const listEl = document.getElementById('notes-list'); listEl.innerHTML = ''; App.state.notes.sort((a,b) => b.lastModified - a.lastModified) .forEach(note => { const li = document.createElement('li'); li.className = `note-list-item ${note.id === App.state.activeNoteId ? 'active' : ''}`; li.dataset.id = note.id; li.innerHTML = `<div class="note-list-item-title">${note.title}</div><div class="note-list-item-date">${new Date(note.lastModified).toLocaleString('es-ES')}</div><button id="delete-note-btn" data-action="delete-note" data-id="${note.id}">🗑️</button>`; listEl.appendChild(li); }); },
+                renderNoteEditor(){ const editorPanel = document.getElementById('note-editor-panel'); const note = App.state.notes.find(n => n.id === App.state.activeNoteId); if(note){ editorPanel.innerHTML = `<input type="text" id="active-note-title" placeholder="Título de la nota..." value="${note.title}"><textarea id="active-note-content" placeholder="Escribe aquí...">${note.content}</textarea>`; } else { editorPanel.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">Selecciona una nota o crea una nueva.</p>'; } },
+                
+                renderProfilePic() {
+                    const picElements = [document.getElementById('profile-pic'), document.getElementById('settings-profile-pic')];
+                    picElements.forEach(pic => {
+                        if (pic && App.state.profilePic) {
+                           pic.src = App.state.profilePic;
+                        }
+                    });
+                },
+                navigateToTask(taskId) {
+                    document.getElementById('calendar-tooltip').style.display = 'none';
+                    App.state.currentView = 'tasks-view';
+                    this.renderAll();
+                    
+                    setTimeout(() => {
+                        const taskCard = document.getElementById(`task-card-${taskId}`);
+                        if (taskCard) {
+                            taskCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            taskCard.classList.add('highlight');
+                            setTimeout(() => taskCard.classList.remove('highlight'), 2500);
+                        }
+                    }, 100);
+                },
+                navigateToSubject(subjectId) {
+                    document.getElementById('calendar-tooltip').style.display = 'none';
+                    App.state.currentView = 'subjects-view';
+                    this.renderAll();
+                    
+                    setTimeout(() => {
+                        const subjectCard = document.getElementById(`subject-card-${subjectId}`);
+                        if (subjectCard) {
+                            subjectCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            subjectCard.classList.add('highlight');
+                            setTimeout(() => subjectCard.classList.remove('highlight'), 2500);
+                        }
+                    }, 100);
+                },
+                showDayViewModal(dateStr) {
+                    const date = new Date(dateStr + 'T00:00:00');
+                    const tasks = App.dataManager.getTasksForDate(date);
+                    
+                    const modalTitle = document.getElementById('day-view-modal-title');
+                    const modalBody = document.getElementById('day-view-modal-body');
+                    
+                    modalTitle.textContent = `Eventos del ${date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+                    
+                    if(tasks.length > 0) {
+                        modalBody.innerHTML = tasks.map(task => this.createTaskElement(task, 'list-item').outerHTML).join('');
+                    } else {
+                        modalBody.innerHTML = '<p>No hay eventos para este día.</p>';
+                    }
+                    this.openModal('day-view-modal');
+                },
+                 prepareStreakModal() {
+                    const container = document.getElementById('streak-week-view-container');
+                    container.innerHTML = '';
+                    const history = App.state.streak.loginHistory || [];
+                    const today = new Date();
+                    const dayOfWeek = (today.getDay() + 6) % 7; // Lunes = 0, Domingo = 6
+                    
+                    const monday = new Date(today);
+                    monday.setDate(today.getDate() - dayOfWeek);
+
+                    const dayNames = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+                    for (let i = 0; i < 7; i++) {
+                        const date = new Date(monday);
+                        date.setDate(monday.getDate() + i);
+                        const dateStr = date.toISOString().split('T')[0];
+                        
+                        const item = document.createElement('div');
+                        item.className = 'streak-day-item';
+                        
+                        if (history.includes(dateStr)) {
+                            item.classList.add('active');
+                        }
+                        if (date.toDateString() === today.toDateString()) {
+                            item.classList.add('current');
+                        }
+                        
+                        item.innerHTML = `
+                            <div class="day-icon">${history.includes(dateStr) ? '🔥' : '➖'}</div>
+                            <div class="day-name">${dayNames[i]}</div>
+                        `;
+                        container.appendChild(item);
+                    }
+                    this.openModal('streak-modal');
+                },
+
+                setupEventListeners() {
+                    document.body.addEventListener('click', e => {
+                        const navLink = e.target.closest('.nav-link');
+                        if (navLink) {
+                            e.preventDefault();
+                            if (navLink.dataset.view) {
+                                App.state.currentView = navLink.dataset.view;
+                                this.renderAll();
+                            } else if (navLink.classList.contains('theme-toggle-btn')) {
+                                App.state.theme = App.state.theme === 'light' ? 'dark' : 'light';
+                                App.dataManager.save();
+                                this.applyTheme();
+                            } else if (navLink.id === 'open-notepad-btn') {
+                                this.prepareNotepad();
+                            } else if (navLink.id === 'open-horoscope-btn') {
+                                this.showHoroscope();
+                            }
+                        }
+                        
+                        if (e.target.closest('.close-modal-btn')) this.closeModal(e.target.closest('.modal-overlay').id);
+                        if (e.target.matches('.modal-overlay')) this.closeModal(e.target.id);
+                        
+                        if (e.target.closest('#add-new-subject-btn')) this.prepareSubjectModal();
+                        if (e.target.closest('#open-new-task-modal-btn-dash') || e.target.closest('#open-new-task-modal-btn-2')) this.prepareAddNewModal();
+                        
+                        const pomodoroControl = e.target.closest('.pomodoro-control-btn');
+                        if(pomodoroControl) {
+                            e.stopPropagation();
+                            const action = pomodoroControl.dataset.action;
+                            if (action === 'toggle') this.pomodoro.toggle();
+                            else if (action === 'reset') this.pomodoro.reset();
+                            else if (action === 'settings') this.preparePomodoroSettingsModal();
+                        }
+
+                        if (e.target.closest('#open-add-new-modal-btn')) this.prepareAddNewModal();
+                        if (e.target.closest('#change-picture-btn')) document.getElementById('pfp-upload').click();
+                        if (e.target.closest('#streak-widget')) this.prepareStreakModal();
+                        
+                        const pomodoroWidget = e.target.closest('#pomodoro-widget');
+                        if (pomodoroWidget && !e.target.closest('.pomodoro-control-btn')) { 
+                            App.state.currentView = 'focus-view'; 
+                            this.renderAll(); 
+                        }
+                        
+                        if (e.target.closest('#exit-focus-view-btn')) { App.state.currentView = 'dashboard-view'; this.renderAll(); }
+
+                        if (e.target.closest('.schedule-event')) { this.navigateToSubject(e.target.closest('.schedule-event').dataset.subjectId); }
+
+                        const subjectActionBtn = e.target.closest('.subject-action-btn');
+                        if (subjectActionBtn) {
+                            const id = subjectActionBtn.dataset.subjectId;
+                            if (subjectActionBtn.dataset.action === 'edit') {
+                                this.prepareSubjectModal(id);
+                            } else if (subjectActionBtn.dataset.action === 'delete') {
+                                if (confirm('¿Seguro? Las tareas de esta materia pasarán a "General".')) {
+                                    App.dataManager.deleteSubject(id);
+                                    this.renderSubjectsView();
+                                }
+                            }
+                        }
+                        if(e.target.closest('#add-schedule-btn')) this.addScheduleRow();
+                        if(e.target.dataset.action === 'delete-schedule-row') e.target.closest('.schedule-entry').remove();
+
+                        if (e.target.matches('.task-checkbox')) { App.dataManager.toggleTask(e.target.dataset.id); this.renderAll(); }
+                        const taskCard = e.target.closest('.task-card');
+                        if(taskCard && !e.target.matches('.task-checkbox, .delete-btn, .edit-btn') && !e.target.closest('.delete-btn, .edit-btn')) {
+                            this.prepareDetailModal(taskCard.dataset.taskId, 'task');
+                        }
+                        const subjectCard = e.target.closest('.subject-card');
+                        if (subjectCard && !e.target.closest('.subject-action-btn')) {
+                            this.prepareDetailModal(subjectCard.dataset.subjectId, 'subject');
+                        }
+
+                        const taskActionBtn = e.target.closest('.delete-btn[data-task-id]'); if(taskActionBtn) { const id = taskActionBtn.dataset.taskId; if (taskActionBtn.dataset.action === 'edit') this.prepareTaskModal(id); if (taskActionBtn.dataset.action === 'delete') if (confirm('¿Eliminar esta tarea?')) { App.dataManager.deleteTask(id); this.renderAll(); } }
+                        
+                        if(e.target.closest('#new-note-btn')) { App.dataManager.addNote(); this.renderNoteList(); this.renderNoteEditor(); }
+                        const noteItem = e.target.closest('.note-list-item'); if(noteItem && !e.target.closest('#delete-note-btn')) { App.state.activeNoteId = noteItem.dataset.id; this.renderNoteList(); this.renderNoteEditor(); }
+                        if(e.target.closest('[data-action="delete-note"]')) { App.dataManager.deleteNote(e.target.dataset.id); this.renderNoteList(); this.renderNoteEditor(); }
+                        
+                        const deleteHabitBtn = e.target.closest('.delete-habit-btn');
+                        if (deleteHabitBtn) {
+                            const habitId = deleteHabitBtn.dataset.habitId;
+                            if (confirm('¿Estás seguro de que quieres eliminar este hábito?')) {
+                                App.dataManager.deleteHabit(habitId);
+                                this.renderHabitTracker();
+                            }
+                        }
+
+                        const filterLink = e.target.closest('.filter-link');
+                        if (filterLink) {
+                            document.querySelectorAll('#task-filter-nav .filter-link').forEach(link => link.classList.remove('active'));
+                            filterLink.classList.add('active');
+                            App.state.taskFilters.category = filterLink.dataset.category;
+                            this.renderTasksView();
+                        }
+                    });
+                    
+                    const calendarBody = document.getElementById('calendar-body');
+                    const tooltip = document.getElementById('calendar-tooltip');
+                    const scheduleTimeline = document.getElementById('schedule-timeline-content');
+
+                    const setupTooltip = (container) => {
+                         container.addEventListener('mouseover', e => {
+                            const item = e.target.closest('.calendar-task-item, .calendar-class-item, .schedule-event');
+                            if (!item) return;
+                            
+                            let content = '';
+                            if(item.classList.contains('calendar-task-item')) {
+                                const task = App.dataManager.getTask(item.dataset.taskId);
+                                if(!task) return;
+                                const subject = App.dataManager.getSubject(task.subjectId);
+                                content = `<h5>${task.name}</h5><p><strong>Materia:</strong> ${subject.name}</p>`;
+                            } else if (item.classList.contains('calendar-class-item')) {
+                                const subject = App.dataManager.getSubject(item.dataset.subjectId);
+                                if(!subject) return;
+                                content = `<h5>${subject.name}</h5><p><strong>Clase</strong></p>`;
+                            } else if (item.classList.contains('schedule-event')) {
+                                content = `<h5>${item.title.replace('\n', '<br>')}</h5>`;
+                            }
+
+                            tooltip.innerHTML = content;
+                            tooltip.style.display = 'block';
+                        });
+
+                        container.addEventListener('mousemove', e => {
+                            tooltip.style.left = e.pageX + 15 + 'px';
+                            tooltip.style.top = e.pageY + 15 + 'px';
+                        });
+                        
+                        container.addEventListener('mouseout', e => {
+                            if (e.target.closest('.calendar-task-item, .calendar-class-item, .schedule-event')) {
+                                tooltip.style.display = 'none';
+                            }
+                        });
+                    };
+
+                    setupTooltip(calendarBody);
+                    setupTooltip(scheduleTimeline);
+                    
+                    calendarBody.addEventListener('click', e => {
+                        const taskItem = e.target.closest('.calendar-task-item');
+                        if (taskItem) {
+                            e.preventDefault();
+                            this.navigateToTask(taskItem.dataset.taskId);
+                        }
+                        const classItem = e.target.closest('.calendar-class-item');
+                        if (classItem) {
+                            e.preventDefault();
+                            this.prepareDetailModal(classItem.dataset.subjectId, 'subject');
+                        }
+
+                        const dayTrigger = e.target.closest('.day-number, .calendar-more-indicator');
+                        if (dayTrigger) {
+                            e.preventDefault();
+                            this.showDayViewModal(dayTrigger.dataset.date);
+                        }
+                    });
+
+
+                    document.getElementById('add-new-item-form').addEventListener('submit', e => {
+                        e.preventDefault();
+                        const type = document.getElementById('add-new-item-type').value;
+                        let taskData = { subjectId: 'general', details: {} };
+
+                        if (type === 'task') {
+                            taskData = {
+                                name: document.getElementById('new-task-title').value,
+                                dueDate: document.getElementById('new-task-due-date').value,
+                                category: document.getElementById('new-task-type').value,
+                                subjectId: document.getElementById('new-task-subject').value,
+                                details: { description: document.getElementById('new-task-details').value }
+                            };
+                        } else if (type === 'exam') {
+                             taskData = {
+                                name: document.getElementById('new-exam-module').value,
+                                dueDate: document.getElementById('new-exam-date').value,
+                                category: 'Exámenes',
+                                subjectId: document.getElementById('new-exam-subject').value,
+                                details: { mode: document.getElementById('new-exam-mode').value, room: document.getElementById('new-exam-room').value, seat: document.getElementById('new-exam-seat').value, time: document.getElementById('new-exam-time').value, duration: document.getElementById('new-exam-duration').value }
+                            };
+                        } else if (type === 'vacation') {
+                             taskData = {
+                                name: document.getElementById('new-vacation-name').value,
+                                dueDate: document.getElementById('new-vacation-start-date').value,
+                                category: 'Vacaciones',
+                                subjectId: 'general',
+                                details: { description: document.getElementById('new-vacation-details').value, endDate: document.getElementById('new-vacation-end-date').value, photo: document.getElementById('vacation-photo-preview').src }
+                            };
+                        }
+
+                        App.dataManager.addTask(taskData);
+                        this.closeModal('add-new-item-modal');
+                        this.renderAll();
+                    });
+
+                    document.getElementById('add-new-item-type').addEventListener('change', e => { this.switchAddNewForm(e.target.value); });
+                    
+                    document.getElementById('new-vacation-photo').addEventListener('change', e => {
+                          const file = e.target.files[0];
+                          if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                  const preview = document.getElementById('vacation-photo-preview');
+                                  preview.src = event.target.result;
+                                  preview.style.display = 'block';
+                                  document.getElementById('vacation-photo-placeholder').style.display = 'none';
+                              };
+                              reader.readAsDataURL(file);
+                          }
+                    });
+
+                    document.getElementById('pomodoro-settings-modal').addEventListener('input', e => {
+                        const { pomodoro } = App.state;
+                        let changed = false;
+                        if (e.target.id === 'pomodoro-focus-time') { pomodoro.settings.focus = parseInt(e.target.value) || 25; changed = true; }
+                        if (e.target.id === 'pomodoro-break-time') { pomodoro.settings.break = parseInt(e.target.value) || 5; changed = true; }
+                        if (e.target.id === 'pomodoro-sessions-goal') { pomodoro.sessions.goal = parseInt(e.target.value) || 4; changed = true; }
+                        if (e.target.id === 'pomodoro-custom-color') { pomodoro.progressColor = e.target.value; this.renderPomodoro(); }
+                        if (changed) { if (!pomodoro.isRunning) { this.pomodoro.reset(true, false); } else { this.renderPomodoro(); } }
+                        App.dataManager.save();
+                    });
+
+                    document.getElementById('pomodoro-color-presets').addEventListener('click', e => {
+                        const colorOption = e.target.closest('.color-option');
+                        if (colorOption) {
+                            App.state.pomodoro.progressColor = colorOption.dataset.colorValue;
+                            document.querySelectorAll('#pomodoro-color-presets .color-option').forEach(el => el.classList.remove('selected'));
+                            colorOption.classList.add('selected');
+                            this.renderPomodoro(); App.dataManager.save();
+                        }
+                    });
+
+                    document.getElementById('subject-form').addEventListener('submit', e => {
+                        e.preventDefault();
+                        const schedule = Array.from(document.querySelectorAll('#schedule-container .schedule-entry')).map(row => ({ day: row.querySelector('.schedule-day').value, startTime: row.querySelector('.schedule-start').value, endTime: row.querySelector('.schedule-end').value }));
+                        const subjectData = { 
+                            id: document.getElementById('subject-id').value, 
+                            name: document.getElementById('subject-name').value, 
+                            teacher: document.getElementById('subject-teacher').value, 
+                            classroom: document.getElementById('subject-classroom').value,
+                            building: document.getElementById('subject-building').value,
+                            color: document.querySelector('#subject-color-picker .selected').dataset.colorValue, 
+                            schedule 
+                        };
+                        if (subjectData.id) {
+                            App.dataManager.updateSubject(subjectData);
+                        } else {
+                            App.dataManager.addSubject(subjectData);
+                        }
+                        this.closeModal('subject-modal');
+                        this.renderAll();
+                    });
+                    
+                    document.getElementById('task-form').addEventListener('submit', e => { e.preventDefault(); const taskData = { id: document.getElementById('task-id').value, name: document.getElementById('task-name').value, dueDate: document.getElementById('task-due-date').value, subjectId: document.getElementById('task-subject').value, category: document.getElementById('task-category').value, }; const existingTask = App.dataManager.getTask(taskData.id); if (existingTask) { taskData.completed = existingTask.completed; App.dataManager.updateTask(taskData); } else { App.dataManager.addTask(taskData); } this.closeModal('task-modal'); this.renderAll(); });
+                    
+                    document.getElementById('subject-color-picker').addEventListener('click', e => { if (e.target.classList.contains('color-option')) { document.querySelectorAll('#subject-color-picker .color-option').forEach(el => el.classList.remove('selected')); e.target.classList.add('selected'); } });
+                    
+                    document.getElementById('new-habit-input').addEventListener('keypress', e => { if (e.key === 'Enter' && e.target.value.trim() !== '') { App.dataManager.addHabit(e.target.value.trim()); this.renderHabitTracker(); e.target.value = ''; } });
+                    document.getElementById('quick-task-input').addEventListener('keypress', e => { if (e.key === 'Enter') { const input = e.target.value.trim(); if (!input) return; let taskName = input; let subjectId = 'general'; if (input.includes('#')) { const parts = input.split('#'); const subjectName = parts.pop().trim(); taskName = parts.join('#').trim(); const subject = App.dataManager.getSubjectByName(subjectName); if (subject) subjectId = subject.id; } App.dataManager.addTask({ name: taskName, dueDate: new Date().toISOString().split('T')[0], subjectId: subjectId, category: 'Tareas' }); this.renderAll(); e.target.value = ''; } });
+                    document.getElementById('habit-list-container').addEventListener('change', e => { if(e.target.matches('input[type="checkbox"]')) App.dataManager.toggleHabit(e.target.dataset.habitId, parseInt(e.target.dataset.day)); });
+                    document.getElementById('note-editor-panel').addEventListener('input', e => { const id = App.state.activeNoteId; if(id) { const title = document.getElementById('active-note-title').value; const content = document.getElementById('active-note-content').value; App.dataManager.updateNote(id, {title, content}); clearTimeout(this.noteRenderTimeout); this.noteRenderTimeout = setTimeout(() => this.renderNoteList(), 500); } });
+                    document.getElementById('cal-prev-btn').addEventListener('click', () => {App.state.calendar.date.setMonth(App.state.calendar.date.getMonth() - 1); this.renderCalendar()});
+                    document.getElementById('cal-today-btn').addEventListener('click', () => {App.state.calendar.date = new Date(); this.renderCalendar()});
+                    document.getElementById('cal-next-btn').addEventListener('click', () => {App.state.calendar.date.setMonth(App.state.calendar.date.getMonth() + 1); this.renderCalendar()});
+                    document.getElementById('toggle-classes-btn').addEventListener('click', () => {App.state.calendar.showClasses = !App.state.calendar.showClasses; App.dataManager.save(); this.renderCalendar();});
+                    
+                    document.getElementById('pfp-upload').addEventListener('change', e => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            App.state.profilePic = event.target.result;
+                            this.renderProfilePic();
+                            App.dataManager.save();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    document.getElementById('sidebar-search').addEventListener('input', e => {
+                        App.state.taskFilters.searchTerm = e.target.value;
+                        this.renderTasksView();
+                    });
+                },
+                pomodoro: {
+                    toggle() {
+                        App.state.pomodoro.isRunning = !App.state.pomodoro.isRunning;
+                        if (App.state.pomodoro.isRunning) {
+                            App.state.pomodoro.intervalId = setInterval(() => this.tick(), 1000);
+                        } else {
+                            clearInterval(App.state.pomodoro.intervalId);
+                        }
+                        App.ui.renderPomodoro();
+                        App.ui.renderFocusView();
+                    },
+                    tick() {
+                        App.state.pomodoro.timeLeft--;
+                        if (App.state.pomodoro.timeLeft < 0) {
+                            this.finish();
+                        } else {
+                           App.ui.renderPomodoro();
+                           App.ui.renderFocusView();
+                        }
+                    },
+                    finish() {
+                        const { pomodoro } = App.state;
+                        clearInterval(pomodoro.intervalId);
+                        pomodoro.isRunning = false;
+                        document.getElementById('alert-sound').play();
+                        
+                        if (!pomodoro.isBreak) {
+                            pomodoro.sessions.current++;
+                            if (pomodoro.sessions.current >= pomodoro.sessions.goal) {
+                                alert("¡Felicidades! Has completado tu meta de sesiones.");
+                                if(App.state.currentView === 'focus-view') {
+                                    App.state.currentView = 'dashboard-view';
+                                }
+                                this.reset();
+                                App.ui.renderAll();
+                                return;
+                            }
+                        }
+                        
+                        pomodoro.isBreak = !pomodoro.isBreak;
+                        this.reset(false, false);
+                        this.toggle();
+                    },
+                    reset(manual = true, stopTimer = true){
+                        const { pomodoro } = App.state;
+                        if (stopTimer) {
+                            clearInterval(pomodoro.intervalId);
+                            pomodoro.isRunning = false;
+                        }
+                        if (manual) {
+                            pomodoro.isBreak = false;
+                            pomodoro.sessions.current = 0;
+                        }
+                        pomodoro.timeLeft = (pomodoro.isBreak ? pomodoro.settings.break : pomodoro.settings.focus) * 60;
+                        App.ui.renderPomodoro();
+                        App.ui.renderFocusView();
+                    }
+                },
+                 showHoroscope() { const horoscopes = [ { emoji: "♈", quote: "Una ráfaga de energía te encuentra hoy. ¡Canalízala en un proyecto que te apasione!" }, { emoji: "♉", quote: "La paciencia es tu aliada. Un enfoque lento y constante conducirá al dulce éxito." }, { emoji: "♊", quote: "Tu curiosidad es tu superpoder. Haz preguntas y explora una nueva idea." }, { emoji: "♋", quote: "Escucha a tu corazón. Tu intuición te está guiando hacia una verdad reconfortante." }, { emoji: "♌", quote: "¡No tengas miedo de brillar! Tu carisma natural te abrirá puertas hoy." }, { emoji: "♍", quote: "Un pequeño acto de organización te traerá una gran paz mental. Ordena tu espacio o tu agenda." } ]; const {emoji, quote} = horoscopes[Math.floor(Math.random() * horoscopes.length)]; document.getElementById('horoscope-emoji').textContent = emoji; document.getElementById('horoscope-text').textContent = quote; this.openModal('horoscope-modal'); }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            App.dataManager.load();
+            App.dataManager.updateStreak();
+            App.dataManager.resetWeeklyHabits();
+            App.ui.init();
+        });
+    })();
+    </script>
+</body>
+</html>

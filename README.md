@@ -1,4 +1,7 @@
 # StudentPlanner
+
+#Visit the site ---->   https://davfervar.github.io/StudentPlanner/
+
 🎓 Who We Are
 
 We're a team of college students who understand the struggles of balancing school, work, and life. That’s why we built this digital planner, to help students like us stay organized, motivated, and mentally balanced.

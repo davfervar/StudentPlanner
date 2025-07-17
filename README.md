@@ -1,6 +1,6 @@
 # StudentPlanner
 
-#Visit the site ---->   https://davfervar.github.io/StudentPlanner/
+Visit the site ---->   https://davfervar.github.io/StudentPlanner/
 
 🎓 Who We Are
 
